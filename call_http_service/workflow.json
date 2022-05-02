@@ -1,0 +1,40 @@
+{
+  "updateTime": 1651520122357,
+  "name": "get_random_fact",
+  "description": "Edit or extend this sample workflow. Set the workflow name to get started",
+  "version": 1,
+  "tasks": [
+    {
+      "name": "get_random_fact",
+      "taskReferenceName": "get_random_fact",
+      "inputParameters": {
+        "http_request": {
+          "uri": "https://catfact.ninja/fact",
+          "method": "GET"
+        }
+      },
+      "type": "HTTP",
+      "decisionCases": {},
+      "defaultCase": [],
+      "forkTasks": [],
+      "startDelay": 0,
+      "joinOn": [],
+      "optional": false,
+      "defaultExclusiveJoinTask": [],
+      "asyncComplete": false,
+      "loopOver": []
+    }
+  ],
+  "inputParameters": [],
+  "outputParameters": {
+    "data": "${get_random_fact.output.response.body.fact}",
+    "factLength": "${get_random_fact.output.response.body.length}"
+  },
+  "schemaVersion": 2,
+  "restartable": true,
+  "workflowStatusListenerEnabled": false,
+  "timeoutPolicy": "ALERT_ONLY",
+  "timeoutSeconds": 0,
+  "variables": {},
+  "inputTemplate": {}
+}
