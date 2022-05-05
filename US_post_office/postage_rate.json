@@ -69,7 +69,7 @@
         "name": "Set_USPS_Name",
         "taskReferenceName": "Set_USPS_Name",
         "inputParameters": {
-          "name": "\"651ORKES5285\""
+          "name": "\"<yourvalue here>\""
         },
         "type": "SET_VARIABLE",
         "decisionCases": {},
