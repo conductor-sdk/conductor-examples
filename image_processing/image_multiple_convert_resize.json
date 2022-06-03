@@ -1,0 +1,79 @@
+{
+    "updateTime": 1652141192381,
+    "name": "image_multiple_convert_resize",
+    "description": "Convert an image to multiple formats and sizes",
+    "version": 1,
+    "tasks": [
+      {
+        "name": "image_multiple_convert_resize",
+        "taskReferenceName": "image_multiple_convert_resize_ref",
+        "inputParameters": {
+          "fileLocation": "${workflow.input.fileLocation}",
+          "outputFormats": "${workflow.input.outputFormats}",
+          "outputSizes": "${workflow.input.outputSizes}",
+          "maintainAspectRatio": "${workflow.input.maintainAspectRatio}"
+        },
+        "type": "SIMPLE",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      },
+      {
+        "name": "image_multiple_convert_resize_fork",
+        "taskReferenceName": "image_multiple_convert_resize_fork_ref",
+        "inputParameters": {
+          "dynamicTasks": "${image_multiple_convert_resize_ref.output.dynamicTasks}",
+          "dynamicTasksInput": "${image_multiple_convert_resize_ref.output.dynamicTasksInput}"
+        },
+        "type": "FORK_JOIN_DYNAMIC",
+        "decisionCases": {},
+        "dynamicForkTasksParam": "dynamicTasks",
+        "dynamicForkTasksInputParamName": "dynamicTasksInput",
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      },
+      {
+        "name": "image_multiple_convert_resize_join",
+        "taskReferenceName": "image_multiple_convert_resize_join_ref",
+        "inputParameters": {},
+        "type": "JOIN",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      }
+    ],
+    "inputParameters": [
+      "fileLocation",
+      "outputFormats",
+      "outputSizes"
+    ],
+    "outputParameters": {
+      "fileLocations": "${image_multiple_convert_resize_join_ref.output}"
+    },
+    "schemaVersion": 2,
+    "restartable": true,
+    "workflowStatusListenerEnabled": true,
+    "ownerEmail": "jeu@orkes.io",
+    "timeoutPolicy": "ALERT_ONLY",
+    "timeoutSeconds": 0,
+    "variables": {},
+    "inputTemplate": {}
+  }

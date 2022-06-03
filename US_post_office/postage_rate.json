@@ -1,0 +1,201 @@
+{
+    "updateTime": 1650997890771,
+    "name": "postage_rate",
+    "description": "determine shipping cost: USPS",
+    "version": 1,
+    "tasks": [
+      {
+        "name": "flat_rate",
+        "taskReferenceName": "flat_rate",
+        "inputParameters": {
+          "container": "${workflow.input.container}"
+        },
+        "type": "SWITCH",
+        "decisionCases": {
+          "false": [
+            {
+              "name": "Set_dimensions",
+              "taskReferenceName": "Set_dimensions",
+              "inputParameters": {
+                "width": "${workflow.input.width}",
+                "height": "${workflow.input.height}",
+                "length": "${workflow.input.length}"
+              },
+              "type": "SET_VARIABLE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            }
+          ]
+        },
+        "defaultCase": [
+          {
+            "name": "Set_dimensions_flatrate",
+            "taskReferenceName": "Set_dimensions_flatrate",
+            "inputParameters": {
+              "width": "",
+              "height": "",
+              "length": ""
+            },
+            "type": "SET_VARIABLE",
+            "decisionCases": {},
+            "defaultCase": [],
+            "forkTasks": [],
+            "startDelay": 0,
+            "joinOn": [],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": []
+          }
+        ],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": [],
+        "evaluatorType": "javascript",
+        "expression": "function isFlatRate() {var container = $.container; if(container.indexOf('FLAT')>0){return true;}else{return false;}} isFlatRate();"
+      },
+      {
+        "name": "Set_USPS_Name",
+        "taskReferenceName": "Set_USPS_Name",
+        "inputParameters": {
+          "name": "\"<yourvalue here>\""
+        },
+        "type": "SET_VARIABLE",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      },
+      {
+        "name": "get_rate",
+        "taskReferenceName": "get_rate_usps",
+        "inputParameters": {
+          "http_request": {
+            "uri": "https://production.shippingapis.com/ShippingAPI.dll?API=RateV4&XML=<RateV4Request USERID=${workflow.variables.name}><Revision>2</Revision><Package ID=\"0\"><Service>${workflow.input.service}</Service><ZipOrigination>${workflow.input.zipFrom}</ZipOrigination><ZipDestination>${workflow.input.zipTo}</ZipDestination><Pounds>${workflow.input.pounds}</Pounds><Ounces>${workflow.input.ounces}</Ounces><Container>${workflow.input.container}</Container><Width>${workflow.variables.width}</Width><Length>${workflow.variables.length}</Length><Height>${workflow.variables.height}</Height><Girth></Girth><Machinable>TRUE</Machinable></Package></RateV4Request>",
+            "method": "POST",
+            "connectionTimeOut": 1000,
+            "readTimeOut": 1000
+          }
+        },
+        "type": "HTTP",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      },
+      {
+        "name": "pricing_success",
+        "taskReferenceName": "pricing_success",
+        "inputParameters": {
+          "inputvalue": "${get_rate_usps.output.response.body}"
+        },
+        "type": "SWITCH",
+        "decisionCases": {
+          "false": [
+            {
+              "name": "get_error_message",
+              "taskReferenceName": "get_error_message",
+              "inputParameters": {
+                "xml": "${get_rate_usps.output.response.body}",
+                "evaluatorType": "javascript",
+                "expression": "function e() {var xml = $.xml;var descriptionIndexStart = xml.indexOf('<Description>')+13;var descriptionIndexEnd = xml.indexOf('</Description>');var description = xml.substring(descriptionIndexStart,descriptionIndexEnd);return description;}e();"
+              },
+              "type": "INLINE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            },
+            {
+              "name": "terminate_fail_error",
+              "taskReferenceName": "address_error",
+              "inputParameters": {
+                "terminationStatus": "COMPLETED",
+                "workflowOutput": {
+                  "error_message": "${get_error_message.output}"
+                }
+              },
+              "type": "TERMINATE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            }
+          ]
+        },
+        "defaultCase": [
+          {
+            "name": "get_cost",
+            "taskReferenceName": "get_cost",
+            "inputParameters": {
+              "xml": "${get_rate_usps.output.response.body}",
+              "evaluatorType": "javascript",
+              "expression": "function e() {var xml = $.xml;var priceIndexStart = xml.indexOf('<Rate>')+6;var priceIndexEnd = xml.indexOf('</Rate>');var price = xml.substring(priceIndexStart,priceIndexEnd);return price;}e();"
+            },
+            "type": "INLINE",
+            "decisionCases": {},
+            "defaultCase": [],
+            "forkTasks": [],
+            "startDelay": 0,
+            "joinOn": [],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": []
+          }
+        ],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": [],
+        "evaluatorType": "javascript",
+        "expression": "function hasError() {var input = $.inputvalue; if(input.indexOf('Error')>0){return false;}else{return true;}} hasError();"
+      }
+    ],
+    "inputParameters": [],
+    "outputParameters": {
+      "cost": "${get_cost.output.result}"
+    },
+    "schemaVersion": 2,
+    "restartable": true,
+    "workflowStatusListenerEnabled": false,
+    "ownerEmail": "doug.sillars@orkes.io",
+    "timeoutPolicy": "ALERT_ONLY",
+    "timeoutSeconds": 0,
+    "variables": {},
+    "inputTemplate": {}
+  }

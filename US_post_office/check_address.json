@@ -1,0 +1,204 @@
+{
+    "updateTime": 1650645083476,
+    "name": "check_address",
+    "description": "verify an address with USPS",
+    "version": 1,
+    "tasks": [
+      {
+        "name": "Set_USPS_Name",
+        "taskReferenceName": "Set_USPS_Name",
+        "inputParameters": {
+          "name": "\"<yourvalue here>\""
+        },
+        "type": "SET_VARIABLE",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      },
+      {
+        "name": "verify address",
+        "taskReferenceName": "verify_addy_usps",
+        "inputParameters": {
+          "http_request": {
+            "uri": "https://production.shippingapis.com/ShippingAPI.dll?API=Verify&XML=<AddressValidateRequest USERID=${workflow.variables.name}><Address><Address1>${workflow.input.street}</Address1><Address2></Address2><City>${workflow.input.city}</City><State>${workflow.input.state}</State><Zip5>${workflow.input.zip}</Zip5><Zip4></Zip4></Address></AddressValidateRequest>",
+            "method": "POST",
+            "connectionTimeOut": 1000,
+            "readTimeOut": 1000
+          }
+        },
+        "type": "HTTP",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      },
+      {
+        "name": "api_success",
+        "taskReferenceName": "api_success",
+        "inputParameters": {
+          "switchCaseValue": "${verify_addy_usps.output.response.headers.X-Backside-Transport[0]}"
+        },
+        "type": "SWITCH",
+        "decisionCases": {
+          "FAIL FAIL": [
+            {
+              "name": "terminate_fail",
+              "taskReferenceName": "API_fail",
+              "inputParameters": {
+                "terminationStatus": "FAILED",
+                "workflowOutput": {
+                  "api_response": "${verify_addy_usps.output.response.body}"
+                }
+              },
+              "type": "TERMINATE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            }
+          ]
+        },
+        "defaultCase": [
+          {
+            "name": "address_success",
+            "taskReferenceName": "address_success",
+            "inputParameters": {
+              "inputvalue": "${verify_addy_usps.output.response.body}"
+            },
+            "type": "SWITCH",
+            "decisionCases": {
+              "false": [
+                {
+                  "name": "get_error_message",
+                  "taskReferenceName": "get_error_message",
+                  "inputParameters": {
+                    "xml": "${verify_addy_usps.output.response.body}",
+                    "evaluatorType": "javascript",
+                    "expression": "function e() {var xml = $.xml;var descriptionIndexStart = xml.indexOf('<Description>')+13;var descriptionIndexEnd = xml.indexOf('</Description>');var description = xml.substring(descriptionIndexStart,descriptionIndexEnd);return description;}e();"
+                  },
+                  "type": "INLINE",
+                  "decisionCases": {},
+                  "defaultCase": [],
+                  "forkTasks": [],
+                  "startDelay": 0,
+                  "joinOn": [],
+                  "optional": false,
+                  "defaultExclusiveJoinTask": [],
+                  "asyncComplete": false,
+                  "loopOver": []
+                },
+                {
+                  "name": "terminate_fail_error",
+                  "taskReferenceName": "address_error",
+                  "inputParameters": {
+                    "terminationStatus": "COMPLETED",
+                    "workflowOutput": {
+                      "error_message": "${get_error_message.output}"
+                    }
+                  },
+                  "type": "TERMINATE",
+                  "decisionCases": {},
+                  "defaultCase": [],
+                  "forkTasks": [],
+                  "startDelay": 0,
+                  "joinOn": [],
+                  "optional": false,
+                  "defaultExclusiveJoinTask": [],
+                  "asyncComplete": false,
+                  "loopOver": []
+                }
+              ]
+            },
+            "defaultCase": [
+              {
+                "name": "parse_address_json",
+                "taskReferenceName": "parse_address_json",
+                "inputParameters": {
+                  "xml": "${verify_addy_usps.output.response.body}",
+                  "evaluatorType": "javascript",
+                  "expression": "function e() {var xml = $.xml;var streetIndexStart = xml.indexOf('<Address2>')+10;var streetIndexEnd = xml.indexOf('</Address2>');var street = xml.substring(streetIndexStart,streetIndexEnd);var cityIndexStart = xml.indexOf('<City>')+6;var cityIndexEnd = xml.indexOf('</City>');var city = xml.substring(cityIndexStart,cityIndexEnd);var stateIndexStart = xml.indexOf('<State>')+7;var stateIndexEnd = xml.indexOf('</State>');var state = xml.substring(stateIndexStart,stateIndexEnd);var zipIndexStart = xml.indexOf('<Zip5>')+6;var zipIndexEnd = xml.indexOf('</Zip5>');var zip = xml.substring(zipIndexStart,zipIndexEnd);var json = '{\"street\":\"' +street+'\",\"city\":\"' +city+'\",\"state\":\"' +state+'\",\"zip\":\"' +zip+'\"}' ;return JSON.parse(json);}e();"
+                },
+                "type": "INLINE",
+                "decisionCases": {},
+                "defaultCase": [],
+                "forkTasks": [],
+                "startDelay": 0,
+                "joinOn": [],
+                "optional": false,
+                "defaultExclusiveJoinTask": [],
+                "asyncComplete": false,
+                "loopOver": []
+              },
+              {
+                "name": "terminate_success",
+                "taskReferenceName": "terminate_success",
+                "inputParameters": {
+                  "terminationStatus": "COMPLETED",
+                  "workflowOutput": {
+                    "api_response": "${parse_address_json.output}"
+                  }
+                },
+                "type": "TERMINATE",
+                "decisionCases": {},
+                "defaultCase": [],
+                "forkTasks": [],
+                "startDelay": 0,
+                "joinOn": [],
+                "optional": false,
+                "defaultExclusiveJoinTask": [],
+                "asyncComplete": false,
+                "loopOver": []
+              }
+            ],
+            "forkTasks": [],
+            "startDelay": 0,
+            "joinOn": [],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": [],
+            "evaluatorType": "javascript",
+            "expression": "function hasError() {var input = $.inputvalue; if(input.indexOf('Error')>0){return false;}else{return true;}} hasError();"
+          }
+        ],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": [],
+        "evaluatorType": "value-param",
+        "expression": "switchCaseValue"
+      }
+    ],
+    "inputParameters": [],
+    "outputParameters": {
+      "header": "${verify_addy_usps.output.response.headers.X-Backside-Transport[0]}",
+      "address": "${verify_addy_usps.output.response.body}"
+    },
+    "schemaVersion": 2,
+    "restartable": true,
+    "workflowStatusListenerEnabled": false,
+    "ownerEmail": "doug.sillars@orkes.io",
+    "timeoutPolicy": "ALERT_ONLY",
+    "timeoutSeconds": 0,
+    "variables": {},
+    "inputTemplate": {}
+  }
