@@ -1,0 +1,76 @@
+{
+    "updateTime": 1653517411804,
+    "name": "image_effects",
+    "description": "Image Effects Workflow",
+    "version": 1,
+    "tasks": [
+      {
+        "name": "image_effects_prefork",
+        "taskReferenceName": "image_effects_prefork_ref",
+        "inputParameters": {
+          "fileLocations": "${workflow.input.fileLocations}",
+          "recipeInfos": "${workflow.input.recipeInfos}"
+        },
+        "type": "SIMPLE",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      },
+      {
+        "name": "image_effects_fork",
+        "taskReferenceName": "image_effects_fork_ref",
+        "inputParameters": {
+          "dynamicTasks": "${image_effects_prefork_ref.output.dynamicTasks}",
+          "dynamicTasksInput": "${image_effects_prefork_ref.output.dynamicTasksInput}"
+        },
+        "type": "FORK_JOIN_DYNAMIC",
+        "decisionCases": {},
+        "dynamicForkTasksParam": "dynamicTasks",
+        "dynamicForkTasksInputParamName": "dynamicTasksInput",
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      },
+      {
+        "name": "image_effects_join",
+        "taskReferenceName": "image_effects_join_ref",
+        "inputParameters": {},
+        "type": "JOIN",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      }
+    ],
+    "inputParameters": [
+      "fileLocations",
+      "recipeInfos"
+    ],
+    "outputParameters": {
+      "fileLocations": "${image_effects_join_ref.output}"
+    },
+    "schemaVersion": 2,
+    "restartable": true,
+    "workflowStatusListenerEnabled": true,
+    "ownerEmail": "jeu@orkes.io",
+    "timeoutPolicy": "ALERT_ONLY",
+    "timeoutSeconds": 0,
+    "variables": {},
+    "inputTemplate": {}
+  }
