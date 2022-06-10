@@ -1,6 +1,9 @@
-# Video Processing Workflows
+# Video Processing Workflow
 
-In this folder we have a workflow for video processing:
+
+The following workflow has several potential invocations (described below):
+
+* [video_recipes.json](https://github.com/conductor-sdk/conductor-examples/blob/main/video_processing/video_recipes.json)
 
 Below, find two example invocations of the workflow that do slightly different tasks: 
 

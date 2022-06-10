@@ -1,13 +1,11 @@
 # Image Processing Workflows
 
-In this folder we have a several workflows for image processing:
-
-* Image encoding and resizing
-* Image effects
+* [Image encoding and resizing](https://github.com/conductor-sdk/conductor-examples/blob/main/image_processing/image_multiple_convert_resize.json)
+* [Image effects](https://github.com/conductor-sdk/conductor-examples/blob/main/image_processing/image_effects.json)
 
 ## Image encoding and resizing
 
-The image_multiple_convert_resize.json workflow (also found in the [Orkes Playground](https://play.orkes.io/workflowDef/image_multiple_convert_resize)) is used to convert a source image to multiple formats and sizes.
+The [image_multiple_convert_resize.json](https://github.com/conductor-sdk/conductor-examples/blob/main/image_processing/image_multiple_convert_resize.json) workflow (also found in the [Orkes Playground](https://play.orkes.io/workflowDef/image_multiple_convert_resize)) is used to convert a source image to multiple formats and sizes.
 
 The workflow takes in 3 inputs
 
@@ -93,7 +91,7 @@ Here's a sample invocation on the [Orkes Playground](https://play.orkes.io/execu
 ## Image effects
 
 
-The image_effects.json workflow (try it on [Orkes Playground](https://play.orkes.io/workflowDef/image_effects/1 )) demonstrates how to add effects to images. The following recipes are currently supported:
+The [image_effects.json](https://github.com/conductor-sdk/conductor-examples/blob/main/image_processing/image_effects.json) workflow (try it on [Orkes Playground](https://play.orkes.io/workflowDef/image_effects/1 )) demonstrates how to add effects to images. The following recipes are currently supported:
 
 
 * Applying Sepia Tone
