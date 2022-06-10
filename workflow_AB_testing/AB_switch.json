@@ -1,0 +1,117 @@
+{
+    "updateTime": 1654738643603,
+    "name": "AB_test_with_tasktodomain",
+    "description": "task to domain as ab test example",
+    "version": 1,
+    "tasks": [
+      {
+        "name": "AB_switch",
+        "taskReferenceName": "AB_switch",
+        "inputParameters": {},
+        "type": "SWITCH",
+        "decisionCases": {
+          "B": [
+            {
+              "name": "Set_AB_variable_b",
+              "taskReferenceName": "Set_AB_variable_b",
+              "inputParameters": {
+                "variant": "B"
+              },
+              "type": "SET_VARIABLE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            },
+            {
+              "name": "hello_world_subworkflow_b",
+              "taskReferenceName": "hello_world_subworkflow_b",
+              "inputParameters": {},
+              "type": "SUB_WORKFLOW",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "subWorkflowParam": {
+                "name": "hello_world_doug",
+                "version": 1,
+                "taskToDomain": {
+                  "hello_world": "doug"
+                }
+              },
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            }
+          ]
+        },
+        "defaultCase": [
+          {
+            "name": "Set_AB_variable_a",
+            "taskReferenceName": "Set_AB_variable_a",
+            "inputParameters": {
+              "variant": "A"
+            },
+            "type": "SET_VARIABLE",
+            "decisionCases": {},
+            "defaultCase": [],
+            "forkTasks": [],
+            "startDelay": 0,
+            "joinOn": [],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": []
+          },
+          {
+            "name": "hello_world_subworkflow_a",
+            "taskReferenceName": "hello_world_subworkflow_a",
+            "inputParameters": {},
+            "type": "SUB_WORKFLOW",
+            "decisionCases": {},
+            "defaultCase": [],
+            "forkTasks": [],
+            "startDelay": 0,
+            "subWorkflowParam": {
+              "name": "hello_world_doug",
+              "version": 1
+            },
+            "joinOn": [],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": []
+          }
+        ],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": [],
+        "evaluatorType": "javascript",
+        "expression": "function e(){return Math.random()<.5?'B':'A'}e();"
+      }
+    ],
+    "inputParameters": [],
+    "outputParameters": {
+      "data": "${get_random_fact.output.response.body.fact}",
+      "factLength": "${get_random_fact.output.response.body.length}"
+    },
+    "schemaVersion": 2,
+    "restartable": true,
+    "workflowStatusListenerEnabled": false,
+    "ownerEmail": "doug.sillars@orkes.io",
+    "timeoutPolicy": "ALERT_ONLY",
+    "timeoutSeconds": 0,
+    "variables": {},
+    "inputTemplate": {}
+  }

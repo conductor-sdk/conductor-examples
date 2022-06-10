@@ -19,6 +19,7 @@ For example:
 
 ```json
 {
+ "maintainAspectRatio": true,
  "fileLocation": "https://static01.nyt.com/images/2022/02/24/sports/24soccerRussia-02/merlin_195120864_4c81c841-1349-43dd-8204-c792708e5570-superJumbo.jpg",
  "outputFormats": [
      "jpg",
@@ -45,7 +46,7 @@ For example:
 This will result in 9 output images - 3 different sizes with 3 formats each.
 
 ### Visual representation
-![image resize workflow](images/resize.jpg)
+![image resize workflow](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/image_processing/images/resize.jpg)
 
 ### Sample Workflow invocation
 
@@ -134,7 +135,7 @@ NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast.
 
 ### Workflow Diagram
 
-![Diagram of Workflow](images/image_effects_diagram.jpg)
+![Diagram of Workflow](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/image_processing/images/image_effects_diagram.jpg)
 
 ### Example Input
 
@@ -203,17 +204,17 @@ NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast.
 
 Original Image
 
-![original image](images/source_image.jpeg)
+![original image](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/image_processing/images/source_image.jpeg)
 
 Sepia recipe result
 
-![sepia result](images/sepia_tone.jpeg)
+![sepia result](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/image_processing/images/sepia_tone.jpeg)
 
 Vibrant recipe result
 
-![vibrant image](images/vibrant_effect.jpeg)
+![vibrant image](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/image_processing/images/vibrant_effect.jpeg)
 
 Watermark effect (adding Orkes logo to bottom right)
 
-![watermarked image](images/watermark_effect.jpeg)
+![watermarked image](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/image_processing/images/watermark_effect.jpeg   )
 

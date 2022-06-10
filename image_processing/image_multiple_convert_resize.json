@@ -63,7 +63,8 @@
     "inputParameters": [
       "fileLocation",
       "outputFormats",
-      "outputSizes"
+      "outputSizes",
+      "maintainAspectRatio"
     ],
     "outputParameters": {
       "fileLocations": "${image_multiple_convert_resize_join_ref.output}"
