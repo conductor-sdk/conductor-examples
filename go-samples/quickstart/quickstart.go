@@ -23,11 +23,11 @@ import (
 var (
 	apiClient = client.NewAPIClient(
 		settings.NewAuthenticationSettings(
-			"4ea35902-3452-4378-af28-d6cca5ec67f8",
-			"2ngFfe0ySJty3zzJnz0TD13sUZnDnMOvUSJwJ6ZPT7IKwBqx",
+			"KEY",
+			"SECRET",
 		),
 		settings.NewHttpSettings(
-			"https://tw-perf.conductorworkflow.net//api",
+			"https://play.orkes.io/api",
 		))
 
 	taskRunner = worker.NewTaskRunnerWithApiClient(apiClient)
@@ -95,7 +95,7 @@ func main() {
 
 	fmt.Println("Output of the workflow, ", run.Status)
 	state, _ := workflowExecutor.GetWorkflowStatus(id, true, true)
-	
+
 	fmt.Println("Workflow State is ", state)
 	amount := state.Output["Amount"]
 	fmt.Println("Amount is ", amount)
