@@ -10,14 +10,29 @@
 package main
 
 import (
+	"fmt"
 	"github.com/conductor-sdk/conductor-go/sdk/client"
 	"github.com/conductor-sdk/conductor-go/sdk/model"
 	"github.com/conductor-sdk/conductor-go/sdk/settings"
 	"github.com/conductor-sdk/conductor-go/sdk/worker"
-	"github.com/conductor-sdk/conductor-go/sdk/workflow/definition"
+	"github.com/conductor-sdk/conductor-go/sdk/workflow"
 	"github.com/conductor-sdk/conductor-go/sdk/workflow/executor"
-	"os"
 	"time"
+)
+
+var (
+	apiClient = client.NewAPIClient(
+		settings.NewAuthenticationSettings(
+			"4ea35902-3452-4378-af28-d6cca5ec67f8",
+			"2ngFfe0ySJty3zzJnz0TD13sUZnDnMOvUSJwJ6ZPT7IKwBqx",
+		),
+		settings.NewHttpSettings(
+			"https://tw-perf.conductorworkflow.net//api",
+		))
+
+	taskRunner = worker.NewTaskRunnerWithApiClient(apiClient)
+
+	workflowExecutor = executor.NewWorkflowExecutor(apiClient)
 )
 
 type Address struct {
@@ -30,53 +45,59 @@ type ShippingCost struct {
 	Amount float32
 }
 
-func NewSimpleWorkflow() *definition.ConductorWorkflow {
-	apiClient := client.NewAPIClient(
-		settings.NewAuthenticationSettings(
-			os.Getenv("KEY"),
-			os.Getenv("SECRET"),
-		),
-		settings.NewHttpSettings(
-			"https://play.orkes.io/api",
-		))
-	executor := executor.NewWorkflowExecutor(apiClient)
+func NewSimpleWorkflow() *workflow.ConductorWorkflow {
 
-	workflow := definition.NewConductorWorkflow(executor).
+	wf := workflow.NewConductorWorkflow(workflowExecutor).
 		Name("my_first_workflow").
 		Version(1).
 		Description("My First Workflow").
-		TimeoutPolicy(definition.TimeOutWorkflow, 60)
+		TimeoutPolicy(workflow.TimeOutWorkflow, 60)
 
 	//Create a task that calculates the shipping cost
-	calculateShipmentCost := definition.NewSimpleTask("shipping_cost_cal", "shipping_cost_calc").
+	calculateShipmentCost := workflow.NewSimpleTask("shipping_cost_cal", "shipping_cost_calc").
 		Input("address", "${workflow.input.address}").
 		Description("Calculates the cost of shipping based on the address")
 
 	//Add two simple tasks
-	workflow.
+	wf.
 		Add(calculateShipmentCost).
 		OutputParameters(calculateShipmentCost.OutputRef(""))
 
-	return workflow
+	return wf
 }
 
 func CalculateShippingCost(task *model.Task) (interface{}, error) {
-	return &ShippingCost{Amount: 100}, nil
+	return &ShippingCost{Amount: 101}, nil
 }
 
 func StartWorkers() {
-	apiClient := client.NewAPIClient(
-		settings.NewAuthenticationSettings(
-			os.Getenv("KEY"),
-			os.Getenv("SECRET"),
-		),
-		settings.NewHttpSettings(
-			"https://play.orkes.io/api",
-		))
-	taskRunner := worker.NewTaskRunnerWithApiClient(apiClient)
 	taskRunner.StartWorker("shipping_cost_cal", CalculateShippingCost, 1, time.Second*1)
-
-	//Block
-	taskRunner.WaitWorkers()
 }
 
+func main() {
+	StartWorkers()
+
+	wf := NewSimpleWorkflow()
+	err := wf.Register(true)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	id, err := wf.StartWorkflowWithInput(map[string]interface{}{})
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println("Started workflow with Id: ", id)
+	channel, _ := workflowExecutor.MonitorExecution(id)
+	run := <-channel
+
+	fmt.Println("Output of the workflow, ", run.Status)
+	state, _ := workflowExecutor.GetWorkflowStatus(id, true, true)
+	
+	fmt.Println("Workflow State is ", state)
+	amount := state.Output["Amount"]
+	fmt.Println("Amount is ", amount)
+
+}
