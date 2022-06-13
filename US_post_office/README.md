@@ -6,6 +6,13 @@ The workflows below further abstract the APIs - taking account of many important
 
 1. [**check_address**](https://github.com/conductor-sdk/conductor-examples/blob/main/US_post_office/check_address.json).  The USPS can verify 160M addresses in the USA.  This workflow wither either respond with the USPS version of the address (often in all CAPS), or with an error that the address was not found.
 
+
+|[See it in Orkes Playground](https://play.orkes.io/workflowDef/check_address/1)|
+|---| 
+
+(Note: this workflow requires a USPS User name to be run.)
+
+
 Sample input:
 
  ```json
@@ -17,7 +24,15 @@ Sample input:
  ```
 
 
+
+
 2. [**postage_rate**](https://github.com/conductor-sdk/conductor-examples/blob/main/US_post_office/postage_rate.json) given a toZip and fromZip, and some dimensions of the box (and the shipping type), this workflow will output the price for that shipping type.
+
+|[See it in Orkes Playground](https://play.orkes.io/workflowDef/postage_rate/1)|
+|---| 
+
+(Note: this workflow requires a USPS User name to be run.)
+
 
 sample input:
 ```json
