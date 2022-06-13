@@ -1,0 +1,288 @@
+{
+    "updateTime": 1649266893306,
+    "name": "loan_banking",
+    "description": "This workflow is to demo the loan banking process",
+    "version": 1,
+    "tasks": [
+      {
+        "name": "customer_details",
+        "taskReferenceName": "customer_details",
+        "inputParameters": {},
+        "type": "SIMPLE",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      },
+      {
+        "name": "loan_type",
+        "taskReferenceName": "loan_type",
+        "inputParameters": {
+          "loantype": "${customer_details.output.loantype}"
+        },
+        "type": "SWITCH",
+        "decisionCases": {
+          "education": [
+            {
+              "name": "education_details",
+              "taskReferenceName": "education_details",
+              "inputParameters": {},
+              "type": "SIMPLE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            },
+            {
+              "name": "education_details_verification",
+              "taskReferenceName": "education_details_verification",
+              "inputParameters": {},
+              "type": "SIMPLE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            }
+          ],
+          "property": [
+            {
+              "name": "employment_details",
+              "taskReferenceName": "employment_details",
+              "inputParameters": {},
+              "type": "SIMPLE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            },
+            {
+              "name": "employment_details_verification",
+              "taskReferenceName": "employment_details_verification",
+              "inputParameters": {},
+              "type": "SIMPLE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            }
+          ]
+        },
+        "defaultCase": [
+          {
+            "name": "business_details",
+            "taskReferenceName": "business_details",
+            "inputParameters": {},
+            "type": "SIMPLE",
+            "decisionCases": {},
+            "defaultCase": [],
+            "forkTasks": [],
+            "startDelay": 0,
+            "joinOn": [],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": []
+          },
+          {
+            "name": "business_details_verification",
+            "taskReferenceName": "business_details_verification",
+            "inputParameters": {},
+            "type": "SIMPLE",
+            "decisionCases": {},
+            "defaultCase": [],
+            "forkTasks": [],
+            "startDelay": 0,
+            "joinOn": [],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": []
+          }
+        ],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": [],
+        "evaluatorType": "value-param",
+        "expression": "loantype"
+      },
+      {
+        "name": "credit_score_risk",
+        "taskReferenceName": "credit_score_risk",
+        "inputParameters": {},
+        "type": "SIMPLE",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": []
+      },
+      {
+        "name": "credit_result",
+        "taskReferenceName": "credit_result",
+        "inputParameters": {
+          "creditScore": "${credit_score_risk.output.creditScore}"
+        },
+        "type": "SWITCH",
+        "decisionCases": {
+          "possible": [
+            {
+              "name": "principal_interest_calculation",
+              "taskReferenceName": "principal_interest_calculation",
+              "inputParameters": {},
+              "type": "SIMPLE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            },
+            {
+              "name": "loan_offered_to_customer",
+              "taskReferenceName": "loan_offered_to_customer",
+              "inputParameters": {},
+              "type": "SIMPLE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            },
+            {
+              "name": "customer_decision",
+              "taskReferenceName": "customer_decision",
+              "inputParameters": {
+                "decision": "${loan_offered_to_customer.output.decision}"
+              },
+              "type": "SWITCH",
+              "decisionCases": {
+                "yes": [
+                  {
+                    "name": "loan_transfer_to_customer_account",
+                    "taskReferenceName": "loan_transfer_to_customer_account",
+                    "inputParameters": {},
+                    "type": "SIMPLE",
+                    "decisionCases": {},
+                    "defaultCase": [],
+                    "forkTasks": [],
+                    "startDelay": 0,
+                    "joinOn": [],
+                    "optional": false,
+                    "defaultExclusiveJoinTask": [],
+                    "asyncComplete": false,
+                    "loopOver": []
+                  }
+                ]
+              },
+              "defaultCase": [
+                {
+                  "name": "terminate_due_to_customer_rejection",
+                  "taskReferenceName": "terminate_due_to_customer_rejection",
+                  "inputParameters": {
+                    "terminationStatus": "COMPLETED"
+                  },
+                  "type": "TERMINATE",
+                  "decisionCases": {},
+                  "defaultCase": [],
+                  "forkTasks": [],
+                  "startDelay": 0,
+                  "joinOn": [],
+                  "optional": false,
+                  "defaultExclusiveJoinTask": [],
+                  "asyncComplete": false,
+                  "loopOver": []
+                }
+              ],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": [],
+              "evaluatorType": "javascript",
+              "expression": "$.decision=='yes' ? 'yes' : 'no' "
+            }
+          ]
+        },
+        "defaultCase": [
+          {
+            "name": "terminate_due_to_bank_rejection",
+            "taskReferenceName": "terminate_due_to_bank_rejection",
+            "inputParameters": {
+              "terminationStatus": "COMPLETED"
+            },
+            "type": "TERMINATE",
+            "decisionCases": {},
+            "defaultCase": [],
+            "forkTasks": [],
+            "startDelay": 0,
+            "joinOn": [],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": []
+          }
+        ],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": [],
+        "evaluatorType": "javascript",
+        "expression": "$.creditScore > 760 ? 'possible' : 'reject' "
+      }
+    ],
+    "inputParameters": [],
+    "outputParameters": {},
+    "schemaVersion": 2,
+    "restartable": true,
+    "workflowStatusListenerEnabled": false,
+    "ownerEmail": "altaf.ansari@orkes.io",
+    "timeoutPolicy": "ALERT_ONLY",
+    "timeoutSeconds": 0,
+    "variables": {},
+    "inputTemplate": {}
+  }
