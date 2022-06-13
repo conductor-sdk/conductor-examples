@@ -10,8 +10,9 @@ The workflows below further abstract the APIs - taking account of many important
 |[See it in Orkes Playground](https://play.orkes.io/workflowDef/check_address/1)|
 |---| 
 
-(Note: this workflow requires a USPS User name to be run.)
+(Note: this workflow requires a USPS username to be run.  Change the name of the workflow - to save in your Playground, and add your USPS Username in the Set_USPS_Name task.)
 
+![check address workflow](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/US_post_office/images/check_address.jpg)
 
 Sample input:
 
@@ -31,7 +32,9 @@ Sample input:
 |[See it in Orkes Playground](https://play.orkes.io/workflowDef/postage_rate/1)|
 |---| 
 
-(Note: this workflow requires a USPS User name to be run.)
+(Note: this workflow requires a USPS username to be run.  Change the name of the workflow - to save in your Playground, and add your USPS Username in the Set_USPS_Name task.)
+
+![postage rate workflow](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/US_post_office/images/postage_rate.jpg)
 
 
 sample input:
