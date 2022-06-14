@@ -54,6 +54,10 @@ func NewSimpleWorkflow(executor *executor.WorkflowExecutor) *workflow.ConductorW
 
 //Task1 worker for Task1
 func Task1(task *model.Task) (interface{}, error) {
+
+	//To fail the task send an error
+	//return nil, errors.New("bad idea")
+
 	return map[string]interface{}{
 		"greetings": "Hello, " + fmt.Sprintf("%v", task.InputData["name"]),
 	}, nil

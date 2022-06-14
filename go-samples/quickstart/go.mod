@@ -3,7 +3,7 @@ module quickstart
 go 1.18
 
 require (
-	github.com/conductor-sdk/conductor-go v1.2.1
+	github.com/conductor-sdk/conductor-go v1.2.2
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.4.0
 )
