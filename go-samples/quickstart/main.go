@@ -61,6 +61,11 @@ func main() {
 	}
 
 	fmt.Println("Started workflow with Id: ", id)
+
+	//Get a channel to monitor the workflow execution
+	//Note: This is useful in case of short duration workflows that completes in few seconds.
+	//For long-running workflows, you can use GetWorkflowStatus API (https://github.com/conductor-sdk/conductor-go/blob/main/docs/executor.md#func-workflowexecutor-getworkflowstatus)
+	//To check the status of the workflow periodically
 	channel, _ := workflowExecutor.MonitorExecution(id)
 	run := <-channel
 
