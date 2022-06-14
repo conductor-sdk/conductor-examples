@@ -1,0 +1,251 @@
+{
+    "updateTime": 1651821640430,
+    "name": "schema_approval",
+    "version": 1,
+    "tasks": [
+      {
+        "name": "repeat_until_approved",
+        "taskReferenceName": "repeat_until_approved",
+        "inputParameters": {
+          "approved": "${workflow.variables.approved}",
+          "approved2": true
+        },
+        "type": "DO_WHILE",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopCondition": "if ($.approved) { false;} else { true;}  ",
+        "loopOver": [
+          {
+            "name": "upload_schema",
+            "taskReferenceName": "upload_schema",
+            "inputParameters": {},
+            "type": "SIMPLE",
+            "decisionCases": {},
+            "defaultCase": [],
+            "forkTasks": [],
+            "startDelay": 0,
+            "joinOn": [],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": []
+          },
+          {
+            "name": "fork_join",
+            "taskReferenceName": "my_fork_join_ref",
+            "inputParameters": {},
+            "type": "FORK_JOIN",
+            "decisionCases": {},
+            "defaultCase": [],
+            "forkTasks": [
+              [
+                {
+                  "name": "Review1.a",
+                  "taskReferenceName": "Review1.a",
+                  "inputParameters": {},
+                  "type": "SIMPLE",
+                  "decisionCases": {},
+                  "defaultCase": [],
+                  "forkTasks": [],
+                  "startDelay": 0,
+                  "joinOn": [],
+                  "optional": false,
+                  "defaultExclusiveJoinTask": [],
+                  "asyncComplete": false,
+                  "loopOver": []
+                }
+              ],
+              [
+                {
+                  "name": "Review1.b",
+                  "taskReferenceName": "Review1.b",
+                  "inputParameters": {},
+                  "type": "SIMPLE",
+                  "decisionCases": {},
+                  "defaultCase": [],
+                  "forkTasks": [],
+                  "startDelay": 0,
+                  "joinOn": [],
+                  "optional": false,
+                  "defaultExclusiveJoinTask": [],
+                  "asyncComplete": false,
+                  "loopOver": []
+                }
+              ]
+            ],
+            "startDelay": 0,
+            "joinOn": [],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": []
+          },
+          {
+            "name": "notification_join",
+            "taskReferenceName": "notification_join_ref",
+            "inputParameters": {},
+            "type": "JOIN",
+            "decisionCases": {},
+            "defaultCase": [],
+            "forkTasks": [],
+            "startDelay": 0,
+            "joinOn": [
+              "Review1.a",
+              "Review1.b"
+            ],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": []
+          },
+          {
+            "name": "Review1Check",
+            "taskReferenceName": "Review1Check",
+            "inputParameters": {
+              "switchCaseValue": "${user_action.output.approved}",
+              "expression": "if (both approved) return YES; else return NO;"
+            },
+            "type": "SWITCH",
+            "decisionCases": {
+              "YES": [
+                {
+                  "name": "Review2",
+                  "taskReferenceName": "Review2",
+                  "inputParameters": {},
+                  "type": "SIMPLE",
+                  "decisionCases": {},
+                  "defaultCase": [],
+                  "forkTasks": [],
+                  "startDelay": 0,
+                  "joinOn": [],
+                  "optional": false,
+                  "defaultExclusiveJoinTask": [],
+                  "asyncComplete": false,
+                  "loopOver": []
+                },
+                {
+                  "name": "Review2Check",
+                  "taskReferenceName": "Review2Check",
+                  "inputParameters": {
+                    "switchCaseValue": "${user_action.output.approved}",
+                    "expression": "if (skippReview3) return YES; else return NO;"
+                  },
+                  "type": "SWITCH",
+                  "decisionCases": {
+                    "YES": [
+                      {
+                        "name": "CompleteReview",
+                        "taskReferenceName": "CompleteReview_1",
+                        "inputParameters": {},
+                        "type": "SIMPLE",
+                        "decisionCases": {},
+                        "defaultCase": [],
+                        "forkTasks": [],
+                        "startDelay": 0,
+                        "joinOn": [],
+                        "optional": false,
+                        "defaultExclusiveJoinTask": [],
+                        "asyncComplete": false,
+                        "loopOver": []
+                      }
+                    ],
+                    "NO": [
+                      {
+                        "name": "Review3",
+                        "taskReferenceName": "Review3",
+                        "inputParameters": {},
+                        "type": "SIMPLE",
+                        "decisionCases": {},
+                        "defaultCase": [],
+                        "forkTasks": [],
+                        "startDelay": 0,
+                        "joinOn": [],
+                        "optional": false,
+                        "defaultExclusiveJoinTask": [],
+                        "asyncComplete": false,
+                        "loopOver": []
+                      },
+                      {
+                        "name": "Review3Check",
+                        "taskReferenceName": "Review3Check",
+                        "inputParameters": {
+                          "switchCaseValue": "${user_action.output.approved}",
+                          "expression": "if (approved) return YES; else return NO;"
+                        },
+                        "type": "SWITCH",
+                        "decisionCases": {
+                          "YES": [
+                            {
+                              "name": "CompleteReview",
+                              "taskReferenceName": "CompleteReview_2",
+                              "inputParameters": {},
+                              "type": "SIMPLE",
+                              "decisionCases": {},
+                              "defaultCase": [],
+                              "forkTasks": [],
+                              "startDelay": 0,
+                              "joinOn": [],
+                              "optional": false,
+                              "defaultExclusiveJoinTask": [],
+                              "asyncComplete": false,
+                              "loopOver": []
+                            }
+                          ]
+                        },
+                        "defaultCase": [],
+                        "forkTasks": [],
+                        "startDelay": 0,
+                        "joinOn": [],
+                        "optional": false,
+                        "defaultExclusiveJoinTask": [],
+                        "asyncComplete": false,
+                        "loopOver": [],
+                        "evaluatorType": "value-param",
+                        "expression": "switchCaseValue"
+                      }
+                    ]
+                  },
+                  "defaultCase": [],
+                  "forkTasks": [],
+                  "startDelay": 0,
+                  "joinOn": [],
+                  "optional": false,
+                  "defaultExclusiveJoinTask": [],
+                  "asyncComplete": false,
+                  "loopOver": [],
+                  "evaluatorType": "value-param",
+                  "expression": "switchCaseValue"
+                }
+              ]
+            },
+            "defaultCase": [],
+            "forkTasks": [],
+            "startDelay": 0,
+            "joinOn": [],
+            "optional": false,
+            "defaultExclusiveJoinTask": [],
+            "asyncComplete": false,
+            "loopOver": [],
+            "evaluatorType": "value-param",
+            "expression": "switchCaseValue"
+          }
+        ]
+      }
+    ],
+    "inputParameters": [],
+    "outputParameters": {},
+    "schemaVersion": 2,
+    "restartable": true,
+    "workflowStatusListenerEnabled": false,
+    "ownerEmail": "manan16489@gmail.com",
+    "timeoutPolicy": "ALERT_ONLY",
+    "timeoutSeconds": 0,
+    "variables": {},
+    "inputTemplate": {}
+  }
