@@ -55,6 +55,8 @@ github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDk
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
 github.com/conductor-sdk/conductor-go v1.2.0 h1:uUVmWWkCG+HzFyNcTpOUldv0nWtGJPWnVNpBdMpe1iE=
 github.com/conductor-sdk/conductor-go v1.2.0/go.mod h1:JqI9lwWnItWFUrE5N1wP2oiRoB0qlVnEuRyZzGNsHE0=
+github.com/conductor-sdk/conductor-go v1.2.1 h1:WVuxtWObIPkocPW4c2tDwl7r4xSxubEjxZinFpXhUmo=
+github.com/conductor-sdk/conductor-go v1.2.1/go.mod h1:JqI9lwWnItWFUrE5N1wP2oiRoB0qlVnEuRyZzGNsHE0=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
