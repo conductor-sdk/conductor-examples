@@ -10,80 +10,51 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/conductor-sdk/conductor-go/sdk/client"
-	"github.com/conductor-sdk/conductor-go/sdk/model"
 	"github.com/conductor-sdk/conductor-go/sdk/settings"
 	"github.com/conductor-sdk/conductor-go/sdk/worker"
-	"github.com/conductor-sdk/conductor-go/sdk/workflow"
 	"github.com/conductor-sdk/conductor-go/sdk/workflow/executor"
+	"os"
+	"quickstart/workflow"
 	"time"
 )
 
 var (
 	apiClient = client.NewAPIClient(
 		settings.NewAuthenticationSettings(
-			"KEY",
-			"SECRET",
+			os.Getenv("KEY"),
+			os.Getenv("SECRET"),
 		),
 		settings.NewHttpSettings(
-			"https://play.orkes.io/api",
+			os.Getenv("CONDUCTOR_SERVER_URL"),
 		))
-
-	taskRunner = worker.NewTaskRunnerWithApiClient(apiClient)
-
+	taskRunner       = worker.NewTaskRunnerWithApiClient(apiClient)
 	workflowExecutor = executor.NewWorkflowExecutor(apiClient)
+	metadataClient   = client.MetadataResourceApiService{APIClient: apiClient}
 )
 
-type Address struct {
-	Name    string
-	Address []string
-	Country string
-}
-
-type ShippingCost struct {
-	Amount float32
-}
-
-func NewSimpleWorkflow() *workflow.ConductorWorkflow {
-
-	wf := workflow.NewConductorWorkflow(workflowExecutor).
-		Name("my_first_workflow").
-		Version(1).
-		Description("My First Workflow").
-		TimeoutPolicy(workflow.TimeOutWorkflow, 60)
-
-	//Create a task that calculates the shipping cost
-	calculateShipmentCost := workflow.NewSimpleTask("shipping_cost_cal", "shipping_cost_calc").
-		Input("address", "${workflow.input.address}").
-		Description("Calculates the cost of shipping based on the address")
-
-	//Add two simple tasks
-	wf.
-		Add(calculateShipmentCost).
-		OutputParameters(calculateShipmentCost.OutputRef(""))
-
-	return wf
-}
-
-func CalculateShippingCost(task *model.Task) (interface{}, error) {
-	return &ShippingCost{Amount: 101}, nil
-}
-
 func StartWorkers() {
-	taskRunner.StartWorker("shipping_cost_cal", CalculateShippingCost, 1, time.Second*1)
+	taskRunner.StartWorker("task1", workflow.Task1, 1, time.Millisecond*100)
+	taskRunner.StartWorker("task2", workflow.Task2, 1, time.Millisecond*100)
 }
 
 func main() {
+
+	//Start the workers
 	StartWorkers()
 
-	wf := NewSimpleWorkflow()
+	wf := workflow.NewSimpleWorkflow(workflowExecutor)
 	err := wf.Register(true)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	id, err := wf.StartWorkflowWithInput(map[string]interface{}{})
+	id, err := wf.StartWorkflowWithInput(&workflow.NameAndCity{
+		Name: "Conductor",
+		City: "NYC",
+	})
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -95,9 +66,8 @@ func main() {
 
 	fmt.Println("Output of the workflow, ", run.Status)
 	state, _ := workflowExecutor.GetWorkflowStatus(id, true, true)
+	output, err := json.Marshal(state.Output)
 
-	fmt.Println("Workflow State is ", state)
-	amount := state.Output["Amount"]
-	fmt.Println("Amount is ", amount)
+	fmt.Println("Workflow Output is ", string(output))
 
 }

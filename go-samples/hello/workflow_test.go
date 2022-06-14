@@ -4,25 +4,24 @@ import (
 	"fmt"
 	"github.com/conductor-sdk/conductor-go/sdk/model"
 	"github.com/stretchr/testify/assert"
-	"quickstart/workflow"
 	"testing"
 	"time"
 )
 
 func TestWorkflowExecution(t *testing.T) {
-	wf := workflow.NewSimpleWorkflow(workflowExecutor)
+	wf := NewSimpleWorkflow()
 	err := wf.Register(true)
 	assert.NoError(t, err)
 
-	id, err := wf.StartWorkflowWithInput(&workflow.NameAndCity{
+	id, err := wf.StartWorkflowWithInput(&WorkflowInput{
 		Name: "Conductor",
 		City: "New York",
 	})
 	assert.NoError(t, err)
 	assert.NotEmpty(t, id)
 
-	taskRunner.StartWorker("task1", workflow.Task1, 1, time.Second*1)
-	taskRunner.StartWorker("task2", workflow.Task2, 1, time.Second*1)
+	taskRunner.StartWorker("task1", Task1, 1, time.Second*1)
+	taskRunner.StartWorker("task2", Task2, 1, time.Second*1)
 
 	channel, err := workflowExecutor.MonitorExecution(id)
 	assert.NoError(t, err)
@@ -35,4 +34,10 @@ func TestWorkflowExecution(t *testing.T) {
 	assert.NotNil(t, greetings)
 	fmt.Println("Greetings: ", greetings)
 
+}
+
+func Worker(task *model.Task) (interface{}, error) {
+	return map[string]interface{}{
+		"Amount": 203,
+	}, nil
 }
