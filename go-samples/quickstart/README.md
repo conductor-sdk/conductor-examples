@@ -6,22 +6,21 @@ and write a simple test that validates the workflow defintion and its execution
 ### Running Example
 **Note** Obtain KEY and SECRET from the playground or your Conductor server
 
-Run the main program
+Export variables
 ```shell
 export KEY=
 export SECRET=
 export CONDUCTOR_SERVER_URL=https://play.orkes.io/api
+```
 
+Run the main program
+```shell
 go run main.go
 
 ```
 
 Run the test
 ```shell
-export KEY=
-export SECRET=
-export CONDUCTOR_SERVER_URL=https://play.orkes.io/api
-
 go test
 
 ```
