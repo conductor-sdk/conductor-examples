@@ -1,5 +1,11 @@
 # Image Processing Workflows
 
+There are two workflows for image processing described in this article:
+
+1. Image encoding and resizing
+2. Image Effects
+
+These workflows require workers that are a part of the [orkesworkers](https://github.com/orkes-io/orkesworkers) GitHub repository (and are running in the Orkes Playground for use).
 
 ## [Image encoding and resizing](https://github.com/conductor-sdk/conductor-examples/blob/main/image_processing/image_multiple_convert_resize.json)
 
