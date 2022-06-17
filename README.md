@@ -5,6 +5,7 @@ This repository contains various end to end working workflows that you can use t
 
 # Examples
 
+
 * [Hello World](/call_http_service) - Call a remote HTTP service
 * [Document Approvals](/document_approvals/) - a document approval workflow
 * [Loan Approval](/finance/) - a loan approval example workflow
@@ -18,3 +19,14 @@ This repository contains various end to end working workflows that you can use t
 
 
 If you have a workflow you'd like to share, please create a pull request!
+
+# Language Specific Examples
+
+### Go 
+See [go-samples](go-samples/) for examples of building workflows and workers in golang
+
+### Java
+[Shipment Workflow Example](https://github.com/Netflix/conductor/tree/main/java-sdk/example/java/com/netflix/conductor/sdk/example/shipment)
+
+### Python
+

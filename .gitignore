@@ -104,3 +104,12 @@ dist
 .tern-port
 
 .DS_Store
+go-samples/go.sum
+.idea/conductor-examples.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+go-samples/quickstart/.idea/modules.xml
+go-samples/quickstart/.idea/quickstart.iml
+go-samples/quickstart/.idea/vcs.xml
+go-samples/quickstart/.idea/
