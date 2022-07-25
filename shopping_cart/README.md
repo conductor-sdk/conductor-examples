@@ -63,7 +63,7 @@ This will complete the `cart_wait` task.
 
 ### Checkout Branch
 
-If the `cart` status form the front end is `checkout`, its time to kick in the SUBWORKFLOW for checkout.  In this demo, no checkout takes place, but we will soon have workflows that can be replaced here to run a checkout.
+If the `cart` status from the update is changed to `checkout`, it is time to kick in the SUBWORKFLOW for checkout.  In this demo, no checkout takes place, but we will soon have workflows that can be replaced here to run a checkout.
 
 * `checkout_task`: This SUBWORKFLOW runs the checkout. In this sample, it is a placeholder app that calculates pi to 2 digits. A sample checkout workflow is coming soon.
 
