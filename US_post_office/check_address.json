@@ -4,29 +4,13 @@
     "description": "verify an address with USPS",
     "version": 1,
     "tasks": [
-      {
-        "name": "Set_USPS_Name",
-        "taskReferenceName": "Set_USPS_Name",
-        "inputParameters": {
-          "name": "\"<yourvalue here>\""
-        },
-        "type": "SET_VARIABLE",
-        "decisionCases": {},
-        "defaultCase": [],
-        "forkTasks": [],
-        "startDelay": 0,
-        "joinOn": [],
-        "optional": false,
-        "defaultExclusiveJoinTask": [],
-        "asyncComplete": false,
-        "loopOver": []
-      },
+
       {
         "name": "verify address",
         "taskReferenceName": "verify_addy_usps",
         "inputParameters": {
           "http_request": {
-            "uri": "https://production.shippingapis.com/ShippingAPI.dll?API=Verify&XML=<AddressValidateRequest USERID=${workflow.variables.name}><Address><Address1>${workflow.input.street}</Address1><Address2></Address2><City>${workflow.input.city}</City><State>${workflow.input.state}</State><Zip5>${workflow.input.zip}</Zip5><Zip4></Zip4></Address></AddressValidateRequest>",
+            "uri": "https://production.shippingapis.com/ShippingAPI.dll?API=Verify&XML=<AddressValidateRequest USERID=${workflow.secrets.post_office_username}><Address><Address1>${workflow.input.street}</Address1><Address2></Address2><City>${workflow.input.city}</City><State>${workflow.input.state}</State><Zip5>${workflow.input.zip}</Zip5><Zip4></Zip4></Address></AddressValidateRequest>",
             "method": "POST",
             "connectionTimeOut": 1000,
             "readTimeOut": 1000

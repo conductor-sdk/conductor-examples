@@ -1,0 +1,240 @@
+{
+  "updateTime": 1658783929759,
+  "name": "shopping_cart",
+  "description": "Edit or extend this sample workflow. Set the workflow name to get started",
+  "version": 1,
+  "tasks": [
+    {
+      "name": "cart_creation",
+      "taskReferenceName": "cart_creation_ref",
+      "inputParameters": {
+        "cart": "shopping",
+        "cart_items": "${workflow.input.items}"
+      },
+      "type": "SET_VARIABLE",
+      "decisionCases": {},
+      "defaultCase": [],
+      "forkTasks": [],
+      "startDelay": 0,
+      "joinOn": [],
+      "optional": false,
+      "defaultExclusiveJoinTask": [],
+      "asyncComplete": false,
+      "loopOver": []
+    },
+    {
+      "name": "checkout_success",
+      "taskReferenceName": "checkout_success_ref",
+      "inputParameters": {},
+      "type": "DO_WHILE",
+      "decisionCases": {},
+      "defaultCase": [],
+      "forkTasks": [],
+      "startDelay": 0,
+      "joinOn": [],
+      "optional": false,
+      "defaultExclusiveJoinTask": [],
+      "asyncComplete": false,
+      "loopCondition": "if(\"${workflow.variables.cart}\"!=\"checkout\") { true; } else { false; }",
+      "loopOver": [
+        {
+          "name": "last_cart",
+          "taskReferenceName": "last_cart_ref",
+          "inputParameters": {
+            "lastCart_items": "${workflow.variables.cart_items}"
+          },
+          "type": "SET_VARIABLE",
+          "decisionCases": {},
+          "defaultCase": [],
+          "forkTasks": [],
+          "startDelay": 0,
+          "joinOn": [],
+          "optional": false,
+          "defaultExclusiveJoinTask": [],
+          "asyncComplete": false,
+          "loopOver": []
+        },
+        {
+          "name": "cart_wait",
+          "taskReferenceName": "cart_wait_ref",
+          "inputParameters": {},
+          "type": "WAIT",
+          "decisionCases": {},
+          "defaultCase": [],
+          "forkTasks": [],
+          "startDelay": 0,
+          "joinOn": [],
+          "optional": false,
+          "defaultExclusiveJoinTask": [],
+          "asyncComplete": false,
+          "loopOver": []
+        },
+        {
+          "name": "cart_update",
+          "taskReferenceName": "cart_update_ref",
+          "inputParameters": {
+            "cart": "${cart_wait_ref.output.cart}",
+            "cart_items": "${cart_wait_ref.output.cart_items}"
+          },
+          "type": "SET_VARIABLE",
+          "decisionCases": {},
+          "defaultCase": [],
+          "forkTasks": [],
+          "startDelay": 0,
+          "joinOn": [],
+          "optional": false,
+          "defaultExclusiveJoinTask": [],
+          "asyncComplete": false,
+          "loopOver": []
+        },
+        {
+          "name": "shopping_checkout",
+          "taskReferenceName": "shopping_checkout_ref",
+          "inputParameters": {
+            "switchCaseValue": "${workflow.variables.cart}"
+          },
+          "type": "SWITCH",
+          "decisionCases": {
+            "checkout": [
+              {
+                "name": "checkout_task",
+                "taskReferenceName": "checkout_task_ref",
+                "inputParameters": {},
+                "type": "SUB_WORKFLOW",
+                "decisionCases": {},
+                "defaultCase": [],
+                "forkTasks": [],
+                "startDelay": 0,
+                "subWorkflowParam": {
+                  "name": "pi_calc_test",
+                  "version": 1
+                },
+                "joinOn": [],
+                "optional": false,
+                "defaultExclusiveJoinTask": [],
+                "asyncComplete": false,
+                "loopOver": []
+              },
+              {
+                "name": "checkout_wait",
+                "taskReferenceName": "checkout_wait_ref",
+                "inputParameters": {},
+                "type": "WAIT",
+                "decisionCases": {},
+                "defaultCase": [],
+                "forkTasks": [],
+                "startDelay": 0,
+                "joinOn": [],
+                "optional": false,
+                "defaultExclusiveJoinTask": [],
+                "asyncComplete": false,
+                "loopOver": []
+              },
+              {
+                "name": "sample_task_name_switch",
+                "taskReferenceName": "sample_task_name_vn45m_ref",
+                "inputParameters": {
+                  "switchCaseValue": "${checkout_wait_ref.output.success}"
+                },
+                "type": "SWITCH",
+                "decisionCases": {
+                  "checkout_failed": [
+                    {
+                      "name": "continue_shopping",
+                      "taskReferenceName": "continue_shopping_ref",
+                      "inputParameters": {
+                        "cart": "shopping"
+                      },
+                      "type": "SET_VARIABLE",
+                      "decisionCases": {},
+                      "defaultCase": [],
+                      "forkTasks": [],
+                      "startDelay": 0,
+                      "joinOn": [],
+                      "optional": false,
+                      "defaultExclusiveJoinTask": [],
+                      "asyncComplete": false,
+                      "loopOver": []
+                    }
+                  ]
+                },
+                "defaultCase": [
+                  {
+                    "name": "empty_cart_exit",
+                    "taskReferenceName": "empty_cart_exit_ref",
+                    "inputParameters": {
+                      "cart_items": ""
+                    },
+                    "type": "SET_VARIABLE",
+                    "decisionCases": {},
+                    "defaultCase": [],
+                    "forkTasks": [],
+                    "startDelay": 0,
+                    "joinOn": [],
+                    "optional": false,
+                    "defaultExclusiveJoinTask": [],
+                    "asyncComplete": false,
+                    "loopOver": []
+                  }
+                ],
+                "forkTasks": [],
+                "startDelay": 0,
+                "joinOn": [],
+                "optional": false,
+                "defaultExclusiveJoinTask": [],
+                "asyncComplete": false,
+                "loopOver": [],
+                "evaluatorType": "value-param",
+                "expression": "switchCaseValue"
+              }
+            ]
+          },
+          "defaultCase": [
+            {
+              "name": "sample_task_name_inline",
+              "taskReferenceName": "sample_task_name_skwrs_ref",
+              "inputParameters": {
+                "expression": "({ someKey: 'someValue' })",
+                "evaluatorType": "javascript"
+              },
+              "type": "INLINE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": []
+            }
+          ],
+          "forkTasks": [],
+          "startDelay": 0,
+          "joinOn": [],
+          "optional": false,
+          "defaultExclusiveJoinTask": [],
+          "asyncComplete": false,
+          "loopOver": [],
+          "evaluatorType": "value-param",
+          "expression": "switchCaseValue"
+        }
+      ]
+    }
+  ],
+  "inputParameters": [
+    "items"
+  ],
+  "outputParameters": {
+    "cart": "${workflow.variables.cart}",
+    "cart_items": "${workflow.variables.cart_items}"
+  },
+  "schemaVersion": 2,
+  "restartable": true,
+  "workflowStatusListenerEnabled": false,
+  "ownerEmail": "doug.sillars@orkes.io",
+  "timeoutPolicy": "ALERT_ONLY",
+  "timeoutSeconds": 0,
+  "variables": {},
+  "inputTemplate": {}
+}

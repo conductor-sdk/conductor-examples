@@ -66,28 +66,11 @@
         "expression": "function isFlatRate() {var container = $.container; if(container.indexOf('FLAT')>0){return true;}else{return false;}} isFlatRate();"
       },
       {
-        "name": "Set_USPS_Name",
-        "taskReferenceName": "Set_USPS_Name",
-        "inputParameters": {
-          "name": "\"<yourvalue here>\""
-        },
-        "type": "SET_VARIABLE",
-        "decisionCases": {},
-        "defaultCase": [],
-        "forkTasks": [],
-        "startDelay": 0,
-        "joinOn": [],
-        "optional": false,
-        "defaultExclusiveJoinTask": [],
-        "asyncComplete": false,
-        "loopOver": []
-      },
-      {
         "name": "get_rate",
         "taskReferenceName": "get_rate_usps",
         "inputParameters": {
           "http_request": {
-            "uri": "https://production.shippingapis.com/ShippingAPI.dll?API=RateV4&XML=<RateV4Request USERID=${workflow.variables.name}><Revision>2</Revision><Package ID=\"0\"><Service>${workflow.input.service}</Service><ZipOrigination>${workflow.input.zipFrom}</ZipOrigination><ZipDestination>${workflow.input.zipTo}</ZipDestination><Pounds>${workflow.input.pounds}</Pounds><Ounces>${workflow.input.ounces}</Ounces><Container>${workflow.input.container}</Container><Width>${workflow.variables.width}</Width><Length>${workflow.variables.length}</Length><Height>${workflow.variables.height}</Height><Girth></Girth><Machinable>TRUE</Machinable></Package></RateV4Request>",
+            "uri": "https://production.shippingapis.com/ShippingAPI.dll?API=RateV4&XML=<RateV4Request USERID=${workflow.secrets.post_office_username}><Revision>2</Revision><Package ID=\"0\"><Service>${workflow.input.service}</Service><ZipOrigination>${workflow.input.zipFrom}</ZipOrigination><ZipDestination>${workflow.input.zipTo}</ZipDestination><Pounds>${workflow.input.pounds}</Pounds><Ounces>${workflow.input.ounces}</Ounces><Container>${workflow.input.container}</Container><Width>${workflow.variables.width}</Width><Length>${workflow.variables.length}</Length><Height>${workflow.variables.height}</Height><Girth></Girth><Machinable>TRUE</Machinable></Package></RateV4Request>",
             "method": "POST",
             "connectionTimeOut": 1000,
             "readTimeOut": 1000
