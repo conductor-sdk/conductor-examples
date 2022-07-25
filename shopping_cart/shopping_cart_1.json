@@ -1,5 +1,5 @@
 {
-  "updateTime": 1658783929759,
+  "updateTime": 1658786495577,
   "name": "shopping_cart",
   "description": "Edit or extend this sample workflow. Set the workflow name to get started",
   "version": 1,
@@ -99,7 +99,9 @@
               {
                 "name": "checkout_task",
                 "taskReferenceName": "checkout_task_ref",
-                "inputParameters": {},
+                "inputParameters": {
+                  "digits": 2
+                },
                 "type": "SUB_WORKFLOW",
                 "decisionCases": {},
                 "defaultCase": [],
@@ -131,8 +133,8 @@
                 "loopOver": []
               },
               {
-                "name": "sample_task_name_switch",
-                "taskReferenceName": "sample_task_name_vn45m_ref",
+                "name": "checkout_switch",
+                "taskReferenceName": "checkout_switch_ref",
                 "inputParameters": {
                   "switchCaseValue": "${checkout_wait_ref.output.success}"
                 },
