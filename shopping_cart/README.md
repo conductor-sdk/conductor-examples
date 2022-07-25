@@ -14,7 +14,7 @@ If the checkout failed, the cart is placed back in shopping mode, and the user c
 
 ## Detailed description
 
-![workflow diagram](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/shopping_cart/images/review_cycle.png)
+![workflow diagram](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/shopping_cart/images/shopping_Cart_workflow.jpg)
 
 
 ### Workflow Creation
