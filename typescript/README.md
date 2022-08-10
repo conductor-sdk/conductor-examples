@@ -13,10 +13,10 @@ For this we will pull our registered riders. pick the best candidates (the ones 
 
 To simulate some api calls we will use `http://dummyjson.com` dummy json provides us with fake apis. We will use the user api to simulate the pulling of our registered riders. And the posts api to simulate the notifying the rider that he has a ride nearby.
 
-Since we are going to create this workflow as code. Instead of using the diagram. lets try to start with the Test and build our workflow app from the ground up.
-To avoid downloading and setting conductor we will be using Orkes Play. a free conductor playground `https://play.orkes.io/`. But the same applies for netflix conductor.
+Since we are going to create this workflow as code. Instead of using the diagram. lets try to start with the Test and build our workflow app from the ground up. For the excercise I will be using Orkes Play. a free conductor playground `https://play.orkes.io/`. But the same applies for netflix conductor, only you wont need to specify the credentials.
 
-So after logging or sign-up. We need to create an application under the Application menu. Then edit. then just toggle all permissions to on and copy both appKey and secret from the window.
+ In my case i will create an application under the Application menu. Then edit. then just toggle all permissions to on and copy both appKey and secret from the window.
+
 
 ## Workflow as code
 
@@ -69,14 +69,22 @@ export const calculateDistanceWF = generate({
 Now in our test file lets create a test that just creates the workflow. So that we can later look at it on Play.
 
 ```typescript
+
+import {
+  generate,
+  orkesConductorClient,
+  ConductorClient,
+} from "@io-orkes/conductor-typescript";
 import {
   calculateDistanceWF,
 } from "./mydelivery";
 
 describe("My Delivery Test", () => {
+  
   const clientPromise = orkesConductorClient(playConfig);
   describe("Calculate distance workflow", () => {
     test("Creates a workflow", async () => {
+      // const client = new ConductorClient(); // If you are using netflix conductor
       const client = await clientPromise;
       const workflowExecutor = new WorkflowExecutor(client);
       await expect(
@@ -87,4 +95,48 @@ describe("My Delivery Test", () => {
   });
 ```
 
-run `npm test`. So we just created our first workflow. which basically prints the output of its task. if you look at the generated json. you'll notice that there are some attributes we did not put that are being printed. Thats because the `generate` function will generate default/fake values that we will be overriding. you'll also notice that on the output i used  "${calculate_distance_ref.output.distance}" using the generated taskReferenceName. if you don't specify a taskReferenceName it will generate one by just adding `_ref` to the name. To reference a task output or a given task we always use the `taskReferenceName`.
+run `npm test`. So we just created our first workflow. which basically prints the output of its task. if you look at the generated json. you'll notice that there are some attributes we did not put that are being printed. Thats because the `generate` function will generate default/fake values that we will be overriding. you'll also notice that on the output i used  "${calculate_distance_ref.output.distance}" using the generated taskReferenceName. if you don't specify a taskReferenceName it will generate one by just adding `_ref` to the specified name. To reference a task output or a given task we always use the `taskReferenceName`. Another thing to notice is the true passes as the first argument. This flag specifies that the workflow will be overriden. Which is what we want since we will be running our tests over and over again.
+
+We will now run our workflow for this we will add the following test.
+
+```typescript 
+    test("Should calculate distance", async () => {
+      // Just picked two random points.
+      const origin = {
+        latitude: -34.4810097,
+        longitude: -58.4972602,
+      };
+      
+      const destination = {
+        latitude: -34.494858,
+        longitude: -58.491168,
+      };
+
+      // const client = new ConductorClient(); // If you are using netflix conductor
+      const client = await clientPromise;
+      const workflowExecutor = new WorkflowExecutor(client);
+      // Run the workflow passing an origin and a destination
+      const executionId = await workflowExecutor.startWorkflow({
+        name: calculateDistanceWF.name,
+        version: 1,
+        input: {
+          origin,
+          destination,
+        },
+      });
+      const workflowStatus = await workflowExecutor.getWorkflow(
+        executionId,
+        true
+      );
+      
+      expect(workflowStatus?.status).toEqual("COMPLETED");
+      // for now we expect the output of our workflow to be our hardcoded value.
+      expect(workflowStatus?.output?.distance).toBe(12);
+    });
+  });
+```
+Run `yarn test`. Great we have our first workflow execution run!.
+
+## Calculating the real distance.
+
+So what we want is something that calculates the real distance. or an aprox distance between the two points. To get the distance between two points in a sphere we can use Havesine(http://www.movable-type.co.uk/scripts/latlong.html) but since we dont want a direct distance because our riders cant fly :P we are going to implement something like https://en.wikipedia.org/wiki/Taxicab_geometry  
