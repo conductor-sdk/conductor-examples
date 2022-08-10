@@ -24,7 +24,7 @@ import {
 const playConfig: Partial<OrkesApiConfig> = {
   keyId: "dd16ab51-666a-4574-969b-4cf87263b0fd",
   keySecret: "DAK0Nmr80TyG7PdJWRCoPRxzqVoaJgzPQAsQkCnwA1m2DYs8",
-  BASE: "https://play.orkes.io",
+  serverUrl: "https://play.orkes.io",
 };
 
 describe("My Delivery Test", () => {
