@@ -1,3 +1,4 @@
+
 # Extract, Transform Load (ETL)
 
 This workflow extracts data from GitHub, transforms the data, and then uploads it to Orbit.
@@ -7,9 +8,9 @@ This workflow extracts data from GitHub, transforms the data, and then uploads i
 |[Try it in Orkes Playground](https://play.orkes.io/workflowDef/Github_star_workflow)|
 |---|
 
-> Note: to use this workflow, you need API keys for both GitHub and for Orbit.  
-
-
+:::note
+Note: to use this workflow, you need API keys for both GitHub and for Orbit.  
+:::
 
 ## Visual representation
 ![ETL GitHub to Orbit workflow](https://orkes.io/content/img/blogassets/orbitworkflow.png)
