@@ -4,7 +4,9 @@ and write a simple test that validates the workflow defintion and its execution
 
 
 ### Running Example
-**Note** Obtain KEY and SECRET from the playground or your Conductor server
+:::note
+Obtain KEY and SECRET from the playground or your Conductor server
+:::
 
 Export variables
 ```shell

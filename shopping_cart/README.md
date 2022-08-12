@@ -4,7 +4,9 @@
 
 In this example, a shopping cart is created for a user.  It can be updated multiple times during a session, and then a checkout can be made.
 
->Note: Checkout is a placeholder task at this time
+:::note
+Checkout is a placeholder task at this time
+:::
 
 Once the checkout experience has completed, a callback occurs if the checkout was successful.
 
