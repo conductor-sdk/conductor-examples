@@ -1,0 +1,93 @@
+plugins {
+    id "org.springframework.boot"
+    id "java"
+}
+
+jar {
+    enabled = false
+}
+
+group 'io.orkes.conductor.quickstart'
+version "${appVersion}"
+
+dependencies {
+    implementation ("io.orkes.conductor:orkes-conductor-client:${versions.revConductorClient}")
+    implementation project(':orkes-conductor-ssm-properties')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation "io.orkes.conductor:conductor-core:${versions.conductorfork}"
+    implementation "io.orkes.conductor:conductor-common:${versions.conductorfork}"
+
+    //AWS
+    implementation "com.amazonaws:aws-java-sdk-s3:${versions.revAwsSdk}"
+    implementation "com.amazonaws:aws-java-sdk-sqs:${versions.revAwsSdk}"
+    implementation "com.amazonaws:aws-java-sdk-lambda:${versions.revAwsSdk}"
+    implementation "com.amazonaws:aws-java-sdk-sts:${versions.revAwsSdk}"
+    implementation "software.amazon.awssdk:arns:${versions.awsSDK}"
+    implementation "software.amazon.awssdk:secretsmanager:${versions.awsSDK}"
+
+    //ObjectMapper dependencies
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "com.fasterxml.jackson.core:jackson-core"
+
+    //reactive spring
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.5.1'
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    //JDBC
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
+
+    //Mysql
+    implementation "mysql:mysql-connector-java"
+
+    //MSSQL
+    implementation "com.microsoft.sqlserver:mssql-jdbc"
+
+    implementation "com.jayway.jsonpath:json-path:${versions.revJsonPath}"
+
+    //H2
+    testImplementation 'com.h2database:h2:2.0.202'
+
+    //Drool
+    implementation "org.kie:kie-ci:7.4.1.Final"
+    implementation "org.drools:drools-decisiontables:7.4.1.Final"
+    implementation "org.drools:drools-core:7.4.1.Final"
+    implementation "org.drools:drools-compiler:7.4.1.Final"
+    implementation 'com.opencsv:opencsv:5.5.2'
+
+    implementation "com.azure:azure-storage-blob:${versions.revAzureStorageBlobSdk}"
+    implementation "org.apache.commons:commons-lang3"
+
+    // Logback appender and conditional configuration
+    implementation 'io.logz.logback:logzio-logback-appender:1.0.27'
+    implementation 'org.codehaus.janino:janino'
+
+    //
+    implementation "com.google.guava:guava:${versions.revGuava}"
+    implementation "com.netflix.spectator:spectator-api:${versions.revSpectator}"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    testImplementation "org.testcontainers:mockserver:${versions.revTestContainer}"
+    testImplementation "org.mock-server:mockserver-client-java:${versions.revMockServerClient}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+bootJar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version)
+    }
+}
+
+springBoot {
+    buildInfo()
+}
