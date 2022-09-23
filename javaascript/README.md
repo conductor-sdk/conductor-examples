@@ -3,6 +3,8 @@
 So lets imagine we want to build a delivery workflow. For the purpose of this exercise we will imagine that we get a request from our fakeDeliveryApp user that wants to send a package from an origin to a package destination. We as an app that has both registered clients and registered riders (people willing to take our package for a fee) will be in charge to connect the best fitting rider to do the job.
 For this we will pull our registered riders. pick the best candidates (the ones most near to our package) and let them compete to win the ride.
 
+Im of course oversimplifying, The intent is to show the use of conductor as a way of building an application with small constructs or blocks. Achieving by this not only a working app but documentation for free, Since the end application can be seen as a nice diagram that describes the flow of our state and the interaction of the pieces
+
 ## What we need
 
 - Registered Riders.
@@ -11,9 +13,9 @@ For this we will pull our registered riders. pick the best candidates (the ones 
 
 ### "Materials"
 
-To simulate some api calls we will use `http://dummyjson.com` dummy json provides us with fake apis. We will use the user api to simulate the pulling of our registered riders. And the posts api to simulate the notifying the rider that he has a ride nearby.
+To simulate some api calls we will use `http://dummyjson.com` dummy json provides us with fake apis. We will use the user api to simulate the pulling of our registered riders. And the posts api to simulate notifying the rider that he has a ride nearby.
 
-Since we are going to create this workflow as code. Instead of using the diagram. lets try to start with the Test and build our workflow app from the ground up. For the exercise I will be using Orkes Play. a free conductor playground `https://play.orkes.io/`. But the same applies for netflix conductor, only you wont need to specify the credentials.
+Since we are going to create this workflow as code. Instead of using the diagram. lets try to start with the Test and build our workflow app from the ground up. For the exercise I will be using Orkes Play. A free conductor playground `https://play.orkes.io/`. But the same applies for netflix conductor, only you wont need to specify the credentials.
 
 In my case I will create an application under the Application menu. Then edit. Then just toggle all permissions to on and copy both appKey and secret from the window.
 
@@ -21,8 +23,29 @@ In my case I will create an application under the Application menu. Then edit. T
 
 ## Project setup
 
-Create an npm project with `npm init` answer the questions and then install the sdk with `npm i @io-orkes/conductor-typescript`.
-TODO add jest configuration
+Create an npm project with `npm init` answer the questions and then install the sdk with `npm i @io-orkes/conductor-javascript`.
+You'll need to add jest and typescript support for this just copy paste the jest.config.js, tsconfig.json file into your project and add the following devDependencies:
+
+```json
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.2",
+    "@types/jest": "^29.0.3",
+    "@types/node": "^17.0.30",
+    "@types/node-fetch": "^2.6.1",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
+    "eslint": "^6.1.0",
+    "jest": "^28.1.0",
+    "ts-jest": "^28.0.1",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
+  },
+```
+
+and `yarn` to fetch them
 
 ## Getting started
 
@@ -30,7 +53,7 @@ Since we will be creating the workflow as code let's create two files mydelivery
 
 ### Creating our workflow
 
-So for our workflow to work. We will need to calculate the distance between two points. We are going to calculate the distance between the riders two the package (origin). We also want to know the distance between origin to destination to calculate the price. So lets create a workflow that just does that. that way we have a really simple workflow we can just test. and we can reuse in both situations.
+So for our workflow to work. We will need to calculate the distance between two points. We are going to calculate the distance between the riders to the package (origin). We also want to know the distance between origin to destination to calculate the price. So lets create a workflow that just does that. that way we have a really simple workflow we can just test. and we can reuse in both situations.
 
 But first... lets just create a workflow that outputs the result of some function. So in our mydelivery.ts lets do the following:
 
@@ -39,14 +62,13 @@ import {
   generate,
   TaskType,
   OrkesApiConfig,
-} from "@io-orkes/conductor-typescript";
+} from "@io-orkes/conductor-javascript";
 
 export const playConfig: Partial<OrkesApiConfig> = {
-  keyId: "KEY_ID_FROM_PLAY",
-  keySecret: "KEY_SECRET_FROM_PLAY",
-  serverUrl: "https://play.orkes.io",
-};
-
+  keyId: "50b75bb9-665f-42a3-ba19-6eeb83e4c5d5",
+  keySecret: "Grp9REao2mQqGoBVSo15c8Ud3k0gVxvrPw9pBmgu7N3wVaJY",
+  serverUrl: "https://play.orkes.io/api",
+}
 export const calculateDistanceWF = generate({
   name: "calculate_distance",
   inputParameters: ["origin", "destination"],
@@ -55,12 +77,12 @@ export const calculateDistanceWF = generate({
       type: TaskType.INLINE,
       name: "calculate_distance",
       inputParameters: {
-        expression: "{distance: 12}",
+        expression: "12",
       },
     },
   ],
-  outputParameter: {
-    distance: "${calculate_distance_ref.output.distance}",
+  outputParameters: {
+    distance: "${calculate_distance_ref.output.result}",
   },
 });
 ```
@@ -68,18 +90,13 @@ export const calculateDistanceWF = generate({
 Now in our test file lets create a test that just creates the workflow. So that we can later look at it on Play.
 
 ```typescript
-
 import {
-  generate,
   orkesConductorClient,
-  ConductorClient,
-} from "@io-orkes/conductor-typescript";
-import {
-  calculateDistanceWF,
-} from "./mydelivery";
+  WorkflowExecutor,
+} from "@io-orkes/conductor-javascript";
+import { calculateDistanceWF, playConfig } from "./mydelivery";
 
 describe("My Delivery Test", () => {
-
   const clientPromise = orkesConductorClient(playConfig);
   describe("Calculate distance workflow", () => {
     test("Creates a workflow", async () => {
@@ -89,14 +106,15 @@ describe("My Delivery Test", () => {
       await expect(
         workflowExecutor.registerWorkflow(true, calculateDistanceWF)
       ).resolves.not.toThrowError();
-      console.log(JSON.stringify(calculateDistanceWF,null,2))
+      console.log(JSON.stringify(calculateDistanceWF, null, 2));
     });
   });
+});
 ```
 
-Run `npm test`. We just created our first workflow, which basically prints the output of its task. If you look at the generated json. you'll notice that there are some attributes we did not put that are being printed. Thats because the `generate` function will generate default/fake values that we will be overriding. You'll also notice that on the output I used "${calculate_distance_ref.output.distance}" using the generated taskReferenceName. if you don't specify a taskReferenceName it will generate one by just adding `_ref` to the specified name. To reference a task output or a given task we always use the `taskReferenceName`. Another thing to notice is the true passes as the first argument. This flag specifies that the workflow will be overwritten. Which is what we want since we will be running our tests over and over again.
+Run `npm test`. We just created our first workflow, which basically prints the output of its task. If you look at the generated json. you'll notice that there are some attributes we did not put that are being printed. Thats because the `generate` function will generate default/fake values that we will be overwriting. You'll also notice that on the output I used "${calculate_distance_ref.output.distance}" using the generated taskReferenceName. if you don't specify a taskReferenceName it will generate one by just adding `_ref` to the specified name. To reference a task output or a given task we always use the `taskReferenceName`. Another thing to notice is the true passed as the first argument of the registerWorkflow function. This flag specifies that the workflow will be overwritten. Which is what we want since we will be running our tests over and over again.
 
-We will now run our workflow for this we will add the following test.
+Lets create a test to actually run the workflow now. im adding origin and destination parameters which as we know by the workflow definition. We are not using for now. and im adding the test within our previous describe block.
 
 ```typescript
     test("Should calculate distance", async () => {
@@ -132,7 +150,6 @@ We will now run our workflow for this we will add the following test.
       // for now we expect the output of our workflow to be our hardcoded value.
       expect(workflowStatus?.output?.distance).toBe(12);
     });
-  });
 ```
 
 Run `yarn test`. Great we have our first workflow execution run!.
@@ -308,64 +325,63 @@ So we now have an array containing all possible riders. And a workflow which cal
 Since we extracted our Calculate distance to a WF (giving us the advantage of decoupling). We need to map our riders through this function. Lets create a dotMap workflow to do this. This WF will take as inputParameters the array of riders and a workflow id of the calculate_distance to run on each rider. **Note** That this workflow will work for every array and workflow_id provided.
 
 ```typescript
-  describe("Mapper Test", () => {
-    test("Creates a workflow", async () => {
-      const client = await clientPromise;
-      await expect(
-        client.metadataResource.create(workflowDotMap, true)
-      ).resolves.not.toThrowError();
-    });
-
-    test("Gets existing workflow", async () => {
-      const client = await clientPromise;
-      const wf = await client.metadataResource.get(workflowDotMap.name);
-      expect(wf.name).toEqual(workflowDotMap.name);
-      expect(wf.version).toEqual(workflowDotMap.version);
-    });
-
-    test("Can map over an array using a workflow", async () => {
-      const client = await clientPromise;
-      const workflowExecutor = new WorkflowExecutor(client);
-
-      const from = {
-        latitude: -34.4810097,
-        longitude: -58.4972602,
-      };
-      const to = {
-        latitude: -34.494858,
-        longitude: -58.491168,
-      };
-
-      const executionId = await workflowExecutor.startWorkflow({
-        name: workflowDotMap.name,
-        version: 1,
-        input: {
-          inputArray: [{ from, to, identity: "js@js.com" }],
-          mapperWorkflowId: "calculate_distance",
-        },
-      });
-
-      await new Promise((r) => setTimeout(() => r(true), 1300));
-
-      const workflowStatus = await client.workflowResource.getExecutionStatus(
-        executionId,
-        true
-      );
-      expect(workflowStatus?.status).toBe("COMPLETED");
-      expect(workflowStatus?.output?.outputArray).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            distance: 2.2172824347556963,
-            identity: "js@js.com",
-          }),
-        ])
-      );
-    });
+describe("Mapper Test", () => {
+  test("Creates a workflow", async () => {
+    const client = await clientPromise;
+    await expect(
+      client.metadataResource.create(workflowDotMap, true)
+    ).resolves.not.toThrowError();
   });
+
+  test("Gets existing workflow", async () => {
+    const client = await clientPromise;
+    const wf = await client.metadataResource.get(workflowDotMap.name);
+    expect(wf.name).toEqual(workflowDotMap.name);
+    expect(wf.version).toEqual(workflowDotMap.version);
+  });
+
+  test("Can map over an array using a workflow", async () => {
+    const client = await clientPromise;
+    const workflowExecutor = new WorkflowExecutor(client);
+
+    const from = {
+      latitude: -34.4810097,
+      longitude: -58.4972602,
+    };
+    const to = {
+      latitude: -34.494858,
+      longitude: -58.491168,
+    };
+
+    const executionId = await workflowExecutor.startWorkflow({
+      name: workflowDotMap.name,
+      version: 1,
+      input: {
+        inputArray: [{ from, to, identity: "js@js.com" }],
+        mapperWorkflowId: "calculate_distance",
+      },
+    });
+
+    await new Promise((r) => setTimeout(() => r(true), 1300));
+
+    const workflowStatus = await client.workflowResource.getExecutionStatus(
+      executionId,
+      true
+    );
+    expect(workflowStatus?.status).toBe("COMPLETED");
+    expect(workflowStatus?.output?.outputArray).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          distance: 2.2172824347556963,
+          identity: "js@js.com",
+        }),
+      ])
+    );
+  });
+});
 ```
 
 The workflow :
-
 
 ```typescript
 export const workflowDotMap = generate({
@@ -416,95 +432,99 @@ export const workflowDotMap = generate({
       taskReferenceName: "join_ref",
     },
     {
-      type:TaskType.JSON_JQ_TRANSFORM,
-      name:"to_array",
-      inputParameters:{
-        objValues:"${join_ref.output}",
-        queryExpression:".objValues | to_entries | map(.value)"
-      }
-    }
+      type: TaskType.JSON_JQ_TRANSFORM,
+      name: "to_array",
+      inputParameters: {
+        objValues: "${join_ref.output}",
+        queryExpression: ".objValues | to_entries | map(.value)",
+      },
+    },
   ],
   outputParameters: {
     outputArray: "${to_array_ref.output.result}",
   },
 });
 ```
+
 ### FORK_JOIN_DYNAMIC
- 
-In the above workflow we are getting the amount of the array, Then at  "dyn_task_builder" we create a SubWorkflow task template for every item in the array.  At "dyn_input_params_builder" we prepare the parameters that will be passed on to each SubWorkflow. 
+
+In the above workflow we are getting the amount of the array, Then at "dyn_task_builder" we create a SubWorkflow task template for every item in the array. At "dyn_input_params_builder" we prepare the parameters that will be passed on to each SubWorkflow.
 
 Using FORK_JOIN_DYNAMIC we create each task using our previously created template. and pass each corresponding parameter. After the join we use a JSON_JQ_TRANSFORM task to extract the results and return an array with the transformations.
 
 ## Near by riders
 
 Given that we now have the package origin, the package destination. Lets create a new workflow that using the riders last reported location. will return the distance from the rider to the origin of the package. to do this we will simulate we are pulling the riders from our riders microservice. Calculate the distance to the package. and sort them according to the distance to the package.
+
 ```typescript
-  describe("NearbyRiders", () => {
-    // As before we create the workflow.
-    test("Creates a workflow", async () => {
-      const client = await clientPromise;
-      const workflowExecutor = new WorkflowExecutor(client);
+describe("NearbyRiders", () => {
+  // As before we create the workflow.
+  test("Creates a workflow", async () => {
+    const client = await clientPromise;
+    const workflowExecutor = new WorkflowExecutor(client);
 
-      await expect(
-        workflowExecutor.registerWorkflow(true, nearByRiders)
-      ).resolves.not.toThrowError();
-    });
+    await expect(
+      workflowExecutor.registerWorkflow(true, nearByRiders)
+    ).resolves.not.toThrowError();
+  });
 
-    // First lets just test that the api responds with all the users.
-    test("Should return all users with latest reported address", async () => {
-      const client = await clientPromise;
-      const workflowExecutor = new WorkflowExecutor(client);
-      const executionId = await workflowExecutor.startWorkflow({
-        name: nearByRiders.name,
-        input: {
-          place: {
-            latitude: -34.4810097,
-            longitude: -58.4972602,
-          },
+  // First lets just test that the api responds with all the users.
+  test("Should return all users with latest reported address", async () => {
+    const client = await clientPromise;
+    const workflowExecutor = new WorkflowExecutor(client);
+    const executionId = await workflowExecutor.startWorkflow({
+      name: nearByRiders.name,
+      input: {
+        place: {
+          latitude: -34.4810097,
+          longitude: -58.4972602,
         },
-        version: 1,
-      });
-      // Lets wait for the response...
-      await new Promise((r) => setTimeout(() => r(true), 2000));
-      const workflowStatus = await client.workflowResource.getExecutionStatus(
-        executionId,
-        true
-      );
-      expect(workflowStatus.status).toBe("COMPLETED");
-      expect(workflowStatus?.output?.possibleRiders.length).toBeGreaterThan(0);
+      },
+      version: 1,
     });
+    // Lets wait for the response...
+    await new Promise((r) => setTimeout(() => r(true), 2000));
+    const workflowStatus = await client.workflowResource.getExecutionStatus(
+      executionId,
+      true
+    );
+    expect(workflowStatus.status).toBe("COMPLETED");
+    expect(workflowStatus?.output?.possibleRiders.length).toBeGreaterThan(0);
+  });
 
-    // So now we need to specify inputParameters else we wont know the distance to the package
-    test("User object should contain distance to package", async () => {
-      const client = await clientPromise;
+  // So now we need to specify inputParameters else we wont know the distance to the package
+  test("User object should contain distance to package", async () => {
+    const client = await clientPromise;
 
-      const workflowExecutor = new WorkflowExecutor(client);
+    const workflowExecutor = new WorkflowExecutor(client);
 
-      const executionId = await workflowExecutor.startWorkflow({
-        name: nearByRiders.name,
-        input: {
-          place: {
-            latitude: -34.4810097,
-            longitude: -58.4972602,
-          },
+    const executionId = await workflowExecutor.startWorkflow({
+      name: nearByRiders.name,
+      input: {
+        place: {
+          latitude: -34.4810097,
+          longitude: -58.4972602,
         },
-        version: 1,
-      });
-      // Lets wait for the response...
-      await new Promise((r) => setTimeout(() => r(true), 2000));
+      },
+      version: 1,
+    });
+    // Lets wait for the response...
+    await new Promise((r) => setTimeout(() => r(true), 2000));
 
-      const nearbyRidersWfResult =
-        await client.workflowResource.getExecutionStatus(executionId, true);
+    const nearbyRidersWfResult =
+      await client.workflowResource.getExecutionStatus(executionId, true);
 
-      expect(nearbyRidersWfResult.status).toBe("COMPLETED");
-      nearbyRidersWfResult.output?.possibleRiders.forEach((re: any) => {
-        expect(re).toHaveProperty("distance");
-        expect(re).toHaveProperty("rider");
-      });
+    expect(nearbyRidersWfResult.status).toBe("COMPLETED");
+    nearbyRidersWfResult.output?.possibleRiders.forEach((re: any) => {
+      expect(re).toHaveProperty("distance");
+      expect(re).toHaveProperty("rider");
     });
   });
+});
 ```
+
 The workflow:
+
 ```typescript
 export const nearByRiders = generate({
   name: "findNearByRiders",
@@ -560,7 +580,6 @@ export const nearByRiders = generate({
 ```
 
 So first we simulate pulling the riders from our microservice, then we prepare the data so that it contains our simulated "last reported rider location" and then using our mapper we calculate the distance of each rider to the package. Finally we sort the riders by most near to the package. This will give us a list of riders with their distance to the package, sorted by distance to the package.
-
 
 ## Picking a Rider.
 
@@ -653,8 +672,8 @@ export const pickRider = generate({
   },
 });
 ```
-In order to select our candidates. we are running a DO_WHILE task. which will notify our riders. (By posting to our dummyjson) Simulating we are letting our ridder know that there is a ride he will be interested in. We notify them in order from most near to the package to less near. and finally we simulate with a simple task that a rider has accepted our ride.
 
+In order to select our candidates. we are running a DO_WHILE task. which will notify our riders. (By posting to our dummyjson) Simulating we are letting our ridder know that there is a ride he will be interested in. We notify them in order from most near to the package to less near. and finally we simulate with a simple task that a rider has accepted our ride.
 
 First we need to register the task. By registering the task we are letting conductor know that the is some worker that will be doing work for a task with the given name. Then we can add the simple task to our workflow.
 
@@ -662,110 +681,107 @@ We still need to create our actuall worker that will do the work. Else when runn
 
 ### The Worker.
 
-
-
-
 ### The Workflow
 
 ```typescript
-  // Having the nearby riders. we want to filter out those riders who are willing to get the ride.
-  // for this will simulate a POST where we ask the rider if he is willing to get the ride
-  describe("PickRider", () => {
-    test("Creates a workflow", async () => {
-      const client = await clientPromise;
+// Having the nearby riders. we want to filter out those riders who are willing to get the ride.
+// for this will simulate a POST where we ask the rider if he is willing to get the ride
+describe("PickRider", () => {
+  test("Creates a workflow", async () => {
+    const client = await clientPromise;
 
-      await expect(
-        client.metadataResource.create(pickRider, true)
-      ).resolves.not.toThrowError();
-    });
-    test("Every iteration should have the current driver", async () => {
-      const client = await clientPromise;
-      await createRiderRaceDefintion(client);
-
-      const runner = riderRespondWorkerRunner(client);
-      runner.startPolling();
-      
-      // Our N of pre-selected riders
-      const maxCompetingRiders = 5;
-      const targetRiders = [
-        {
-          distance: 12441.284548668005,
-          rider: {
-            id: 15,
-            email: "kminchelle@qq.com",
-          },
-        },
-        {
-          distance: 16211.662539905119,
-          rider: {
-            id: 8,
-            email: "ggude7@chron.com",
-          },
-        },
-        {
-          distance: 17435.548525470404,
-          rider: {
-            id: 29,
-            email: "jissetts@hostgator.com",
-          },
-        },
-        {
-          distance: 17602.325904122146,
-          rider: {
-            id: 20,
-            email: "aeatockj@psu.edu",
-          },
-        },
-        {
-          distance: 17823.508069312982,
-          rider: {
-            id: 3,
-            email: "rshawe2@51.la",
-          },
-        },
-        {
-          distance: 17824.39318092907,
-          rider: {
-            id: 7,
-            email: "dpettegre6@columbia.edu",
-          },
-        },
-        {
-          distance: 23472.94011516013,
-          rider: {
-            id: 26,
-            email: "lgronaverp@cornell.edu",
-          },
-        },
-      ];
-
-      const workflowExecutor = new WorkflowExecutor(client);
-
-      const executionId = await workflowExecutor.startWorkflow({
-        name: pickRider.name,
-        input: {
-          maxCompetingRiders,
-          targetRiders,
-        },
-        version: 1,
-      });
-
-      await new Promise((r) => setTimeout(() => r(true), 2500));
-      const workflowStatus = await client.workflowResource.getExecutionStatus(
-        executionId,
-        true
-      );
-
-      expect(workflowStatus.status).toEqual("COMPLETED");
-
-      // We check our task selected the amount of riders we are after.
-      const doWhileTaskResult = workflowStatus?.tasks?.find(
-        ({ taskType }) => taskType === TaskType.DO_WHILE
-      );
-      expect(doWhileTaskResult?.outputData?.iteration).toBe(maxCompetingRiders);
-      expect(workflowStatus?.output?.selectedRider).toBeTruthy();
-
-      runner.stopPolling();
-    });
+    await expect(
+      client.metadataResource.create(pickRider, true)
+    ).resolves.not.toThrowError();
   });
+  test("Every iteration should have the current driver", async () => {
+    const client = await clientPromise;
+    await createRiderRaceDefintion(client);
+
+    const runner = riderRespondWorkerRunner(client);
+    runner.startPolling();
+
+    // Our N of pre-selected riders
+    const maxCompetingRiders = 5;
+    const targetRiders = [
+      {
+        distance: 12441.284548668005,
+        rider: {
+          id: 15,
+          email: "kminchelle@qq.com",
+        },
+      },
+      {
+        distance: 16211.662539905119,
+        rider: {
+          id: 8,
+          email: "ggude7@chron.com",
+        },
+      },
+      {
+        distance: 17435.548525470404,
+        rider: {
+          id: 29,
+          email: "jissetts@hostgator.com",
+        },
+      },
+      {
+        distance: 17602.325904122146,
+        rider: {
+          id: 20,
+          email: "aeatockj@psu.edu",
+        },
+      },
+      {
+        distance: 17823.508069312982,
+        rider: {
+          id: 3,
+          email: "rshawe2@51.la",
+        },
+      },
+      {
+        distance: 17824.39318092907,
+        rider: {
+          id: 7,
+          email: "dpettegre6@columbia.edu",
+        },
+      },
+      {
+        distance: 23472.94011516013,
+        rider: {
+          id: 26,
+          email: "lgronaverp@cornell.edu",
+        },
+      },
+    ];
+
+    const workflowExecutor = new WorkflowExecutor(client);
+
+    const executionId = await workflowExecutor.startWorkflow({
+      name: pickRider.name,
+      input: {
+        maxCompetingRiders,
+        targetRiders,
+      },
+      version: 1,
+    });
+
+    await new Promise((r) => setTimeout(() => r(true), 2500));
+    const workflowStatus = await client.workflowResource.getExecutionStatus(
+      executionId,
+      true
+    );
+
+    expect(workflowStatus.status).toEqual("COMPLETED");
+
+    // We check our task selected the amount of riders we are after.
+    const doWhileTaskResult = workflowStatus?.tasks?.find(
+      ({ taskType }) => taskType === TaskType.DO_WHILE
+    );
+    expect(doWhileTaskResult?.outputData?.iteration).toBe(maxCompetingRiders);
+    expect(workflowStatus?.output?.selectedRider).toBeTruthy();
+
+    runner.stopPolling();
+  });
+});
 ```

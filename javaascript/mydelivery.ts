@@ -5,8 +5,16 @@ import {
   TaskType,
   WorkflowDef,
   RunnerArgs,
-} from "@io-orkes/conductor-typescript";
+  OrkesApiConfig
+} from "@io-orkes/conductor-javascript";
 
+
+export const playConfig: Partial<OrkesApiConfig> = {
+  keyId: "50b75bb9-665f-42a3-ba19-6eeb83e4c5d5",
+  keySecret: "Grp9REao2mQqGoBVSo15c8Ud3k0gVxvrPw9pBmgu7N3wVaJY",
+  serverUrl: "https://play.orkes.io/api",
+};
+  
 export const calculateDistanceWorkflow: WorkflowDef = generate({
   name: "calculate_distance",
   inputParameters: ["from", "to", "identity"],

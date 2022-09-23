@@ -297,8 +297,10 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@io-orkes/conductor-typescript@../conductor-javascript":
-  version "0.0.1"
+"@io-orkes/conductor-javascript@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@io-orkes/conductor-javascript/-/conductor-javascript-0.0.7.tgz#16592d5986cdbd6310a6e338df49173212fcdf76"
+  integrity sha512-ZIi3yhyMMYUc3JBMiBsB4BIsvd90+PoVP/R+Dbqgg8Hgci8p+7Mv3tsiK0e98TLkmpJP1Nd0xa8skB5qYFE1aA==
   dependencies:
     node-fetch "^2.6.7"
 

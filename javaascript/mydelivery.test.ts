@@ -7,25 +7,14 @@ import {
   riderRespondWorkerRunner,
   createRiderRaceDefintion,
   deliveryWorkflow,
+  playConfig
 } from "./mydelivery";
 import {
-  OrkesApiConfig,
   orkesConductorClient,
   TaskType,
   WorkflowExecutor,
-} from "@io-orkes/conductor-typescript";
+} from "@io-orkes/conductor-javascript";
 
-// const testConfig: Partial<OrkesApiConfig> = {
-//   keyId: "1f8f740c-9117-4016-9cb8-c1d43ed75bb4",
-//   keySecret: "zR0kkWGx17HDNhH2zlfu2IrGtATlmnyQS6FrHlDZXriSsW7M",
-//   BASE: "http://localhost:8080",
-// };
-
-const playConfig: Partial<OrkesApiConfig> = {
-  keyId: "dd16ab51-666a-4574-969b-4cf87263b0fd",
-  keySecret: "DAK0Nmr80TyG7PdJWRCoPRxzqVoaJgzPQAsQkCnwA1m2DYs8",
-  serverUrl: "https://play.orkes.io",
-};
 
 describe("My Delivery Test", () => {
   const clientPromise = orkesConductorClient(playConfig);
