@@ -834,13 +834,13 @@ describe("PickRider", () => {
 
 ## Putting the pieces together.
 
-So now that we have all our "ingredients" let put our fake Delivery app together. So basically what we want is. Given a client with a package request, that has an origin and a destination. we want to pick the best rider who is willing to take the package, to destination. As a bonus lets just compute the cost of the delivery, and make it less expensive if our client is paying by card as opposed to cash.
+So now that we have all our "ingredients" lets put our fake delivery app together. So basically what we want is. Given a client with a package request, that has an origin and a destination. we want to pick the best rider who is willing to take the package, to destination. As a bonus lets just compute the cost of the delivery, and make it less expensive if our client is paying by card as opposed to cash.
 
-So first we will hit our nearByRiders passing the origin as an inputParameter. That will give us our possible riders, which we will pick one according to the distance to the package and "who answers first". Finally we will calculate the distance from origin to destination, to compute the cost.
+So first we will hit our nearByRiders passing the origin as an inputParameter. That will give us our possible riders, which we will pick one according to the distance of the package and "who answers first". Finally we will calculate the distance from origin to destination, to compute the cost.
 
 The output will be our selected rider, and the cost of the shipping.
 
-### The workflow
+### The Workflow
 
 ```typescript
 export const deliveryWorkflow = generate({
@@ -939,3 +939,9 @@ export const deliveryWorkflow = generate({
   },
 });
 ```
+
+## CONCLUSION
+
+Building an app this way resembles building an app by just coding, we just put together small building blocks to build a bigger block. If you followed this article along with play.orkes.io you can actually see the building blocks we are using, which means not only free documentation but a good zoom out of what the project as a whole looks like. Further improvements can come by focusing our attention on a single block, but we wont loose the perspective of the application as a hole.
+
+
