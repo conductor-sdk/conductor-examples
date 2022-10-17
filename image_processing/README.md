@@ -222,7 +222,7 @@ Image on apllying vibrant recipe
 <img src="https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/image_processing/images/vibrant_effect.jpeg"
 alt="vibrant image" width="600" style={{paddingBottom: 20}} />
 
-Image on applying watermark recipe (Logo gets added as per the gravity key mentioned in the output)
+Image on applying watermark recipe (Logo gets added as per the gravity key mentioned in the input)
 
 <img src="https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/image_processing/images/watermark_effect.jpeg"
 alt="watermarked image" width="600" style={{paddingBottom: 20}} />
