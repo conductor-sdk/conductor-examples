@@ -3,18 +3,18 @@
 
 The [video_recipes.json](https://github.com/conductor-sdk/conductor-examples/blob/main/video_processing/video_recipes.json) workflow has several potential invocations.
 
-Below, find two example invocations of the workflow that do slightly different tasks:
+You can find two example invocations of the workflow that do slightly different tasks here:
 
-1. [Video Transcoding](#video-transcoding):  Take one video and convert into many different formats.
-2. [Watermark a video](#video-watermarking):  Add a watermark to your video, and upload to S3.
+1. [Video Transcoding](#video-transcoding):  Take one video and convert it into different formats.
+2. [Watermark a video](#video-watermarking):  Add a watermark to your video, and upload it to S3.
 
 |[Try it in Orkes Playground](https://play.orkes.io/workflowDef/video_recipes/1)|
 |---| 
 
-## Workers required
+## Setting up Workers
 The workers that power these workflows can be found in the [orkesworkers](https://github.com/orkes-io/orkesworkers) GitHub repository.  There are 2 workers used here:
 
-1. video_recipes_prefork: This worker takes the input parameters provided and creates all of the parameters required for the dynamic forks - how many forks to instantiate and the parameters for each of the forks.
+1. video_recipes_prefork: This worker takes the input parameters and creates all the parameters required for the dynamic forks, i.e; the number of forks to be created and the parameters for each of the forks.
 2. video_recipes: This worker takes the inputs and (in the 2 examples below) either transcodes or adds a watermark to the video.
 
 :::note
@@ -25,18 +25,15 @@ These workers are configured to run in Orkes Playground by default.
 
 ### Workflow definition
 
-The video_recipes.json workflow (see it live on [Orkes Playground](https://play.orkes.io/workflowDef/video_recipes)) is a general purpose workflow designed for doing various recipes around video processing. One of the provided recipes includes ```transcode```.
+The video_recipes.json workflow (see it live on [Orkes Playground](https://play.orkes.io/workflowDef/video_recipes)) is a general-purpose workflow designed for doing various recipes around video processing. One of the provided recipes includes ```transcode```.
 
+You need to provide the following input parameters:
 
 * fileLocation: A http location to a video file
-* recipeInfos: An array of recipe names (‘transcode’, ‘watermark’ etc..) and their corresponding parameters recipeParmaters
+* recipeInfos: An array of recipe names (‘transcode’, ‘watermark’ etc..) and their corresponding parameters, i.e; recipeParmaters
 * outputSizes: An array of sizes. Each size object has a width and height property
 
-Here is an example of an input payload to transcode a mp4 file into 4 different formats and encodes
-* Transcode mp4 into h264 mp4 with aac audio and different bit rates, frame rates and audioSamplingFrequency
-* Transcode mp4 into h264 mov with aac audio and different bit rates, frame rates and audioSamplingFrequency
-* Transcode mp4 into libvpx webm with libvorbis audio and different bit rates, frame rates and audioSamplingFrequency
-* Transcode mp4 into another mp4 with same encoder as input but with aac audio and different bit rates, frame rates and audioSamplingFrequency
+Here is an example of an input payload to transcode an mp4 file into 4 different formats and encodes
 
 ```json
 {
@@ -92,8 +89,10 @@ Here is an example of an input payload to transcode a mp4 file into 4 different 
 }
 ``` 
 
-
-
+* Transcode mp4 into h264 mp4 with aac audio and different bit rates, frame rates and audioSamplingFrequency
+* Transcode mp4 into h264 mov with aac audio and different bit rates, frame rates and audioSamplingFrequency
+* Transcode mp4 into libvpx webm with libvorbis audio and different bit rates, frame rates and audioSamplingFrequency
+* Transcode mp4 into another mp4 with the same encoder as input but with aac audio and different bit rates, frame rates and audioSamplingFrequency
 
 
 ### Visual Workflow Definition
@@ -104,21 +103,20 @@ https://play.orkes.io/workflowDef/video_recipes
 
 ### Invoking a Workflow
 
-The workflow can be invoked using one of following ways:
+The workflow can be invoked using the following ways:
 
-UI: There is a Run Workflow option in the Conductor UI to invoke a workflow and see the results:
+UI: There is a _Run Workflow_ option in the Conductor UI to invoke a workflow and see the results.
 
 ![run workflow screenshot](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/video_processing/images/run_video_recipes.jpg)
 
 ### Workflow Executions
 
-You can view a specific workflow invocation using the workflow invocation ID that is returned as part of the invocation. E.g https://play.orkes.io/execution/978dc7e7-e238-11ec-a6d8-32508b865be6
+You can view a specific workflow invocation using the workflow invocation ID that is returned as part of the invocation. For example https://play.orkes.io/execution/978dc7e7-e238-11ec-a6d8-32508b865be6
 
-You can also find an workflows execution from the workflow search console
+You can also view a workflow's execution from the workflow execution console. In the execution view, you have multiple tabs showing the workflow name, workflow ID, start/end time, status of the workflow, etc.
 
 ![screenshot of workflow search](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/video_processing/images/workflow_execution.jpg)
 
-In the execution view you have multiple tabs where you can see the following
 
 ### Invocation path
 
@@ -241,7 +239,7 @@ Output
 
 
 
-In the results you can see the output blob has 4 different transcoded videos as the results of the workflow:
+You can see that the output blob has 4 different transcoded videos.
 
 * [webm formatted video](https://image-processing-orkes.s3.amazonaws.com/84e9a990-d586-48c3-b04b-917e16d3ae72-TRANSCODE.webm)
 
@@ -250,7 +248,7 @@ In the results you can see the output blob has 4 different transcoded videos as 
 
 ## Video Watermarking
 
-This is the same workflow, but by changing the input parameters, we obtain a different result:
+Here you deal with the same workflow, but by changing the input parameters, you can obtain a different result.
 
 ### Input parameters
 
