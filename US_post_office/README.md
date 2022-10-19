@@ -1,18 +1,18 @@
 
 # API Processing Workflows - Example: US Post Office APIs
 
-The US Post Office has a number of APIs to simplify shipping. Let's look how you can use Conductor to abstract the APIs - taking account of many important features. The USPS requests and responses are all XML, and these workflows manage the conversions so that the inputs and outputs are JSON.
+The US Post Office has several APIs to simplify shipping. Let's look at how you can use Conductor to abstract the APIs - taking into account many important features. The USPS requests and responses are all XML, and these workflows manage the conversions so that the inputs and outputs are JSON.
 
 ## Workflow to Check Address - [check_address](https://github.com/conductor-sdk/conductor-examples/blob/main/US_post_office/check_address.json)
 
-The USPS can verify 160M addresses in the USA.  This workflow wither either respond with the USPS version of the address (often in all CAPS), or with an error that the address was not found.
+The USPS can verify 160M addresses in the USA.  This workflow either respond with the USPS version of the address (often in all CAPS), or with an error that the address was not found.
 
 
 |[See it in Orkes Playground](https://play.orkes.io/workflowDef/check_address/1)|
 |---| 
 
 :::note
-This workflow requires a USPS username to be run.  Change the name of the workflow - to save in your Playground, and add your USPS Username in the Set_USPS_Name task. The [API access is free](https://www.usps.com/business/web-tools-apis/).
+This workflow requires a USPS username to be run.  Change the name of the workflow - to save it in your Playground, and add your USPS Username in the Set_USPS_Name task. The [API access is free](https://www.usps.com/business/web-tools-apis/).
 :::
 
 <img src="https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/US_post_office/images/check_address.jpg"
@@ -36,7 +36,7 @@ Given a `toZip` and `fromZip`, and some dimensions of the box (and the shipping 
 |---| 
 
 :::note
-This workflow requires a USPS username to be run.  Change the name of the workflow - to save in your Playground, and add your USPS Username in the Set_USPS_Name task. The [API access is free](https://www.usps.com/business/web-tools-apis/).
+This workflow requires a USPS username to be run.  Change the name of the workflow - to save it in your Playground, and add your USPS Username in the Set_USPS_Name task. The [API access is free](https://www.usps.com/business/web-tools-apis/).
 :::
 
 <img src="https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/US_post_office/images/postage_rate.jpg"
@@ -57,4 +57,4 @@ Sample input:
 }
 ```
 
-Run this workflow multiple times inside a fork to obtain mailing rates for different services (e.g. compare ground vs. priority vs express by calling this workflow asynchronously 3 times).
+Run this workflow multiple times inside a fork to obtain mailing rates for different services (E.g. compare ground vs. priority vs. express by calling this workflow asynchronously 3 times).
