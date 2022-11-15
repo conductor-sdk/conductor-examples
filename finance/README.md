@@ -1,17 +1,33 @@
 
-# Finance Domain Workflow Samples
+# Conductor to solve Finance Domain Issues
 
-##  Deciding a Bank Loan Application - [Loan Decisions](https://github.com/conductor-sdk/conductor-examples/blob/main/finance/loan_banking.json)
+In the modern era, financial services are crucial for the functioning of an economy. With the latest technological advancements, gone are the days when people rely on traditional banking. The transition from conventional banking to modern banking is something that we’ve witnessed over the past decade. 
 
-This sample workflow outlines a decision process for loan origination. It splits the process into three classes; business, education and personal loans.
+This documentation deals with sample workflows through which you can leverage the use of Conductor in solving issues in the finance domain. 
+
+## Sample Workflow - Loan Origination made easier using Conductor
+
+:::note
+This workflow does not have workers that evaluate the loan parameters and is for visualization purposes only.
+:::
+
+You can get the JSON file for the sample workflow detailed [here](https://github.com/conductor-sdk/conductor-examples/blob/main/finance/loan_banking.json).
 
 |[See it in Orkes Playground](https://play.orkes.io/workflowDef/loan_banking)|
 |---| 
 
-:::note
-This workflow does not have workers that evaluate the loan parameters and is for visualization only.
-:::
+<img src="https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/finance/images/workflow_for_loan_origination.png"
+alt="Sample workflow created for loan origination using Conductor" width="600" style={{paddingBottom: 20}} />
 
-![workflow diagram](https://orkes.io/content/assets/images/lending_flow-af1d99d58e14d69eefa46125108dd62d.png)
+Let’s quickly see what each block in the diagram stands for.
 
-Exploure our blog [Modern Loan Banking (Lending) Using Conductor](https://orkes.io/content/blog/loan-banking-using-conductor) to gain more insights.
+1. The initial step is fetching the customer details. Let’s say we fetch the details with the **customer_details** task.  
+2. The next step is deciding on the loan type, which is evaluated by the switch task **loan_type**. It splits the process into three classes; business, education and personal.
+3. Based on the loan type chosen, corresponding details need to be fetched. This is done using the tasks **education_details** / **business_details** / **employment_details**.
+4. Now, the fetched details are to be verified, and this is executed using the tasks **education_details_verification** / **business_details_verification** / **employment_details_verification**.
+5. Once the details are verified, the credit score risk is calculated using the task **credit_score_risk**.
+6. The result of the **credit_store_risk** is passed on to the switch task **credit_result**, which evaluates if the loan is to be permitted or not. If the loan is rejected, the workflow ends using the terminate task **terminate_due_to_bank_rejection**. On the other hand, if the loan is approved, the workflow proceeds with the **possible** switch case.
+7. Now, the workflow proceeds with the interest calculation, and the loan is offered to the customer using the tasks **principal_interest_calculation** and **loan_offered_to_customer**, respectively.
+8. Next is the customer’s decision to accept/reject the loan. It is evaluated using the switch task **customer_decision**. If the customer rejects the loan, the task is terminated by the task **terminate_due_to_customer_rejection** and the workflow ends here. On the other hand, if the customer proceeds with the loan, the amount is transferred to the customer’s account using the task **loan_transfer_to_customer_account** and the workflow ends.
+
+And that’s a quick overview of the workflow. Wanna visualize a successful workflow? Have a look at our blog, [Modern Loan Banking (Lending) Using Conductor](https://orkes.io/content/blog/loan-banking-using-conductor). 
