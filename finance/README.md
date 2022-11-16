@@ -37,7 +37,7 @@ And that’s a quick overview of the workflow. Wanna visualize a successful work
 Let’s see another sample workflow on settling a credit card fraud dispute transaction. This workflow can be achieved by executing each block as tasks/microservices.
 
 <center><img src="https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/finance/images/illustration_of_fraud_dispute_flow.png"
-alt="Fraud dispute flow for credit card transaction dispute" width="90%" height="auto" style={{paddingBottom: 20}} /></center>
+alt="Fraud dispute flow for credit card transaction dispute" width="100%" height="auto" style={{paddingBottom: 20}} /></center>
 
 Let’s see how this can be achieved using a sample workflow created with Conductor. 
 
@@ -59,7 +59,7 @@ The workflow begins when a customer dispute is raised regarding the credit card 
 7. If it is not a high-value customer, the workflow proceeds as shown below.
 
 <center><img src="https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/finance/images/workflow_proceeding_if_not_a_high_valued_customer.png"
-alt="The path of the workflow if the customer is not a high-valued one" width="60%" height="auto" style={{paddingBottom: 20}} /></center>
+alt="The path of the workflow if the customer is not a high-valued one" width="70%" height="auto" style={{paddingBottom: 20}} /></center>
 
 8. The bank will assign an agent for resolution, notify the customer via email, wait for the agent to resolve the issue, decide if the charges will be reversed, and the workflow ends. Let us indicate this entire process using another workflow **assign_agent**. And it is called into the original workflow using the concept of SUB WORKFLOW. Here’s what the **assign_agent** workflow looks like:
 
@@ -78,7 +78,7 @@ So, if it is not a high-value customer, the workflow ends using this **assign_ag
 12. If the transaction amount is not less than the monthly balance, the switch task proceeds with case **no**, and the workflow proceeds in the same manner as mentioned above in Step 7. 
 
 <center><img src="https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/finance/images/workflow_proceeding_if_transaction_amount_is_less_than_balance.png"
-alt="The path of the workflow if transaction amount is less than balance" width="60%" height="auto" style={{paddingBottom: 20}} /></center>
+alt="The path of the workflow if transaction amount is less than balance" width="70%" height="auto" style={{paddingBottom: 20}} /></center>
 
 13. This entire process is also evaluated using the same sub-workflow **assign_agent**. You cannot use the same reference name. Hence it is denoted using **assign_agent_1**.
 
