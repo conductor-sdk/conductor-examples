@@ -14,6 +14,8 @@ You need API keys for both GitHub and Orbit to use this workflow.
 
 ## ETL Workflow
 
+![ETL GitHub to Orbit workflow](https://orkes.io/content/img/blogassets/orbitworkflow.png)
+
 Let’s see the workflow in detail to what each block stands for:
 
 1. The workflow is initiated by providing input data to connect your GitHub account with Orbit. 
