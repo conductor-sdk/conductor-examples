@@ -96,7 +96,8 @@ Here is an example of an input payload to transcode an mp4 file into 4 different
 
 
 ### Visual Workflow Definition
-https://play.orkes.io/workflowDef/video_recipes
+
+You can view the [video_recipes](https://play.orkes.io/workflowDef/video_recipes) workflow in Playground.
 
 ![screenshot of the workflow](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/video_processing/images/video_recipes.jpg)
 
@@ -111,7 +112,7 @@ UI: There is a _Run Workflow_ option in the Conductor UI to invoke a workflow an
 
 ### Workflow Executions
 
-You can view a specific workflow invocation using the workflow invocation ID that is returned as part of the invocation. For example https://play.orkes.io/execution/978dc7e7-e238-11ec-a6d8-32508b865be6
+You can view a specific workflow invocation using the workflow invocation ID that is returned as part of the invocation. For example, the successful [execution](https://play.orkes.io/execution/978dc7e7-e238-11ec-a6d8-32508b865be6) of the workflow. 
 
 You can also view a workflow's execution from the workflow execution console. In the execution view, you have multiple tabs showing the workflow name, workflow ID, start/end time, status of the workflow, etc.
 
