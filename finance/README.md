@@ -15,7 +15,7 @@ You can get the JSON file for the sample workflow detailed [here](https://github
 |---| 
 
 <center><img src="https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/finance/images/loan.png"
-alt="Sample workflow created for loan origination using Conductor" width="70%" height="auto" style={{paddingBottom: 20}} /></center>
+alt="Sample workflow created for loan origination using Conductor" width="100%" height="auto" style={{paddingBottom: 20}} /></center>
 
 Let’s quickly see what each block in the diagram stands for.
 
