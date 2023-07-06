@@ -1,0 +1,104 @@
+{
+    "name": "standup_updates_main",
+    "description": "standup_updates_main",
+    "version": 1,
+    "tasks": [
+      {
+        "name": "fork",
+        "taskReferenceName": "fork",
+        "inputParameters": {},
+        "type": "FORK_JOIN",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [
+          [
+            {
+              "name": "riza_updates",
+              "taskReferenceName": "riza_updates",
+              "inputParameters": {
+                "user_name": "Riza",
+                "user_id": "xxxxxxxxxxx"
+              },
+              "type": "SUB_WORKFLOW",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "subWorkflowParam": {
+                "name": "individual_updates",
+                "version": 2
+              },
+              "joinOn": [],
+              "optional": true,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": [],
+              "retryCount": 0,
+              "onStateChange": {}
+            }
+          ],
+          [
+            {
+              "name": "isabellas_update",
+              "taskReferenceName": "isabellas_update",
+              "inputParameters": {
+                "user_name": "Isabella",
+                "user_id": "XXXXXXXXXXX"
+              },
+              "type": "SUB_WORKFLOW",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "subWorkflowParam": {
+                "name": "individual_updates"
+              },
+              "joinOn": [],
+              "optional": true,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": [],
+              "onStateChange": {}
+            }
+          ]
+        ],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": [],
+        "onStateChange": {}
+      },
+      {
+        "name": "join",
+        "taskReferenceName": "join",
+        "inputParameters": {},
+        "type": "JOIN",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [
+          "isabellas_update",
+          "riza_updates"
+        ],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": [],
+        "onStateChange": {}
+      }
+    ],
+    "inputParameters": [],
+    "outputParameters": {},
+    "schemaVersion": 2,
+    "restartable": true,
+    "workflowStatusListenerEnabled": false,
+    "ownerEmail": "viren@orkes.io",
+    "timeoutPolicy": "ALERT_ONLY",
+    "timeoutSeconds": 0,
+    "variables": {},
+    "inputTemplate": {},
+    "onStateChange": {}
+  }
