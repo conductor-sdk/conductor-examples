@@ -1,0 +1,182 @@
+{
+  "name": "individual_updates",
+  "description": "This workflow is used to get scrum update for user",
+  "version": 2,
+  "tasks": [
+    {
+      "name": "send_welcome_message",
+      "taskReferenceName": "send_welcome_message",
+      "inputParameters": {
+        "user_name": "${workflow.input.user_name}",
+        "http_request": {
+          "uri": "https://slack.com/api/chat.postMessage",
+          "method": "POST",
+          "connectionTimeOut": 3000,
+          "readTimeOut": 3000,
+          "body": {
+            "channel": "${workflow.input.user_id}",
+            "text": "Hello *${workflow.input.user_name}*! Good Morning. What is your scrum update for today. Send *done* to end update",
+            "as_user": true
+          },
+          "headers": {
+            "Authorization": "Bearer ${workflow.secrets.slack_standup_token}"
+          }
+        }
+      },
+      "type": "HTTP",
+      "decisionCases": {},
+      "defaultCase": [],
+      "forkTasks": [],
+      "startDelay": 0,
+      "joinOn": [],
+      "optional": false,
+      "defaultExclusiveJoinTask": [],
+      "asyncComplete": false,
+      "loopOver": [],
+      "onStateChange": {}
+    },
+    {
+      "name": "loopTask",
+      "taskReferenceName": "loopTask",
+      "inputParameters": {
+        "value": "${workflow.input.loop}"
+      },
+      "type": "DO_WHILE",
+      "decisionCases": {},
+      "defaultCase": [],
+      "forkTasks": [],
+      "startDelay": 0,
+      "joinOn": [],
+      "optional": false,
+      "defaultExclusiveJoinTask": [],
+      "asyncComplete": false,
+      "loopCondition": "if ($.webhook_task['event']['text'] == \"done\" ) { false;} else {true;} ",
+      "loopOver": [
+        {
+          "name": "webhook_task",
+          "taskReferenceName": "webhook_task",
+          "inputParameters": {
+            "user_id": "${workflow.input.user_id}",
+            "matches": {
+              "$['event']['type']": "message",
+              "$['event']['user']": "${workflow.input.user_id}"
+            }
+          },
+          "type": "WAIT_FOR_WEBHOOK",
+          "decisionCases": {},
+          "defaultCase": [],
+          "forkTasks": [],
+          "startDelay": 0,
+          "joinOn": [],
+          "optional": false,
+          "defaultExclusiveJoinTask": [],
+          "asyncComplete": false,
+          "loopOver": [],
+          "onStateChange": {}
+        }
+      ],
+      "onStateChange": {}
+    },
+    {
+      "name": "jq_aggregate_updates",
+      "taskReferenceName": "jq_aggregate_updates",
+      "inputParameters": {
+        "updates": "${loopTask.output}",
+        "queryExpression": ".updates | to_entries | .[] | select(.key != \"iteration\") | .value | .webhook_task.event.text | select(. != \"done\") | select (. | startswith(\"Hello\") | not)"
+      },
+      "type": "JSON_JQ_TRANSFORM",
+      "decisionCases": {},
+      "defaultCase": [],
+      "forkTasks": [],
+      "startDelay": 0,
+      "joinOn": [],
+      "optional": false,
+      "defaultExclusiveJoinTask": [],
+      "asyncComplete": false,
+      "loopOver": [],
+      "onStateChange": {}
+    },
+    {
+      "name": "jq_convert_to_string",
+      "taskReferenceName": "jq_convert_to_string",
+      "inputParameters": {
+        "updates": "${jq_aggregate_updates.output.resultList}",
+        "queryExpression": ".updates | join(\",\")"
+      },
+      "type": "JSON_JQ_TRANSFORM",
+      "decisionCases": {},
+      "defaultCase": [],
+      "forkTasks": [],
+      "startDelay": 0,
+      "joinOn": [],
+      "optional": false,
+      "defaultExclusiveJoinTask": [],
+      "asyncComplete": false,
+      "loopOver": [],
+      "onStateChange": {}
+    },
+    {
+      "name": "append_user_name",
+      "taskReferenceName": "append_user_name",
+      "inputParameters": {
+        "user_name": "${workflow.input.user_name}",
+        "updates": "${jq_convert_to_string.output}",
+        "queryExpression": "(.user_name + \"'s update - \" + .updates.result)"
+      },
+      "type": "JSON_JQ_TRANSFORM",
+      "decisionCases": {},
+      "defaultCase": [],
+      "forkTasks": [],
+      "startDelay": 0,
+      "joinOn": [],
+      "optional": false,
+      "defaultExclusiveJoinTask": [],
+      "asyncComplete": false,
+      "loopOver": [],
+      "onStateChange": {}
+    },
+    {
+      "name": "post_updates",
+      "taskReferenceName": "post_updates",
+      "inputParameters": {
+        "http_request": {
+          "uri": "${workflow.secrets.slack_conductor_channel_url}",
+          "method": "POST",
+          "connectionTimeOut": 3000,
+          "readTimeOut": 3000,
+          "body": {
+            "text": "${append_user_name.output.result}"
+          },
+          "headers": {
+            "Content-type": "application/json"
+          }
+        }
+      },
+      "type": "HTTP",
+      "decisionCases": {},
+      "defaultCase": [],
+      "forkTasks": [],
+      "startDelay": 0,
+      "joinOn": [],
+      "optional": false,
+      "defaultExclusiveJoinTask": [],
+      "asyncComplete": false,
+      "loopOver": [],
+      "onStateChange": {}
+    }
+  ],
+  "inputParameters": [
+    "user_name",
+    "user_id"
+  ],
+  "outputParameters": {},
+  "schemaVersion": 2,
+  "restartable": true,
+  "workflowStatusListenerEnabled": false,
+  "ownerEmail": "viren@orkes.io",
+  "timeoutPolicy": "TIME_OUT_WF",
+  "timeoutSeconds": 1800,
+  "variables": {},
+  "inputTemplate": {},
+  "onStateChange": {}
+}
