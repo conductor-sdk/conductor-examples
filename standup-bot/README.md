@@ -12,7 +12,7 @@ Sample Application to create a standup bot for posting daily updates on a Slack 
 
 We can define this workflow visually as follows:
 
-![Workflow Diagram](./standup-bot.jpg)
+![Workflow Diagram](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/standup-bot/images/individual-updates-workflow.jpg)
 
 Click [here](https://play.orkes.io/workflowDef/standup_updates_main/1) to access this definition on Conductor playground.
 
@@ -20,7 +20,7 @@ In this example, we have 2 users. They are the forks of a fork-join task. These 
 
 Here’s how the workflow for individual updates looks like:
 
-![Workflow Diagram](./individual-updates-workflow.jpg)
+![Workflow Diagram](https://raw.githubusercontent.com/conductor-sdk/conductor-examples/main/standup-bot/images/standup-bot.jpg)
 
 Click [here](https://play.orkes.io/workflowDef/individual_updates) to access this definition on Conductor Playground.
 
@@ -32,4 +32,4 @@ When the main workflow is run, all the forks execute in parallel. So let’s see
     - **jq_aggregate_updates** - Used to aggregate updates from the user.
     - **jq_convert_to_string** - Used to convert the updates into CSV format.
     - **append_user_name** - Used to append the user name with updates.
-- The final output is posted to the Slack channel using an HTTP task (post_updates). 
+- The final output is posted to the Slack channel using an HTTP task (**post_updates**). 
