@@ -32,4 +32,4 @@ When the main workflow is run, all the forks execute in parallel. So let’s see
     - **jq_aggregate_updates** - Used to aggregate updates from the user.
     - **jq_convert_to_string** - Used to convert the updates into CSV format.
     - **append_user_name** - Used to append the user name with updates.
-- The final output is posted to the Slack channel using an HTTP task (post_updates). 
+- The final output is posted to the Slack channel using an HTTP task (**post_updates**). 
