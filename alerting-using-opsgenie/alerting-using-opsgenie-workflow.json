@@ -1,0 +1,112 @@
+{
+    "createTime": 1700561912279,
+    "updateTime": 1700561893748,
+    "name": "FailedWorkflowOpsGenieAlerter",
+    "description": "OpsGenie alerter for failed workflows",
+    "version": 2,
+    "tasks": [
+      {
+        "name": "query_processor",
+        "taskReferenceName": "query_processor_ref",
+        "inputParameters": {
+          "queryType": "CONDUCTOR_API",
+          "statuses": "${workflow.input.statuses}",
+          "workflowNames": "${workflow.input.workflows}",
+          "startTimeFrom": "${workflow.input.fromStartedMinsFromNow}",
+          "startTimeTo": "${workflow.input.toStartedMinsFromNow}",
+          "correlationIds": "${workflow.input.correlationIds}",
+          "freeText": "${workflow.input.freeText}"
+        },
+        "type": "QUERY_PROCESSOR",
+        "decisionCases": {},
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": [],
+        "onStateChange": {}
+      },
+      {
+        "name": "has_failure_workflows",
+        "taskReferenceName": "has_failure_workflows",
+        "inputParameters": {
+          "resultCount": "${query_processor_ref.output.result.count}"
+        },
+        "type": "SWITCH",
+        "decisionCases": {
+          "true": [
+            {
+              "name": "ops_genie_task",
+              "taskReferenceName": "ops_genie_task_ref",
+              "inputParameters": {
+                "alias": "${workflow.input.opsGenieAlias}",
+                "description": "${query_processor_ref.output.result.workflowsUrl}",
+                "visibleTo": "${workflow.input.opsGenieVisibleTo}",
+                "message": "Failed Worklows detected",
+                "responders": "${workflow.input.opsGenieResponders}",
+                "details": {},
+                "priority": "${workflow.input.opsGeniePriority}",
+                "entity": "${workflow.input.opsGenieEntity}",
+                "tags": "${workflow.input.opsGenieTags}",
+                "actions": "${workflow.input.opsGenieActions}",
+                "token": "${workflow.secrets.OPS_GENIE_TOKEN}"
+              },
+              "type": "OPS_GENIE",
+              "decisionCases": {},
+              "defaultCase": [],
+              "forkTasks": [],
+              "startDelay": 0,
+              "joinOn": [],
+              "optional": false,
+              "defaultExclusiveJoinTask": [],
+              "asyncComplete": false,
+              "loopOver": [],
+              "onStateChange": {}
+            }
+          ]
+        },
+        "defaultCase": [],
+        "forkTasks": [],
+        "startDelay": 0,
+        "joinOn": [],
+        "optional": false,
+        "defaultExclusiveJoinTask": [],
+        "asyncComplete": false,
+        "loopOver": [],
+        "evaluatorType": "graaljs",
+        "expression": "(function () { return $.resultCount != null && $.resultCount > 0; })();",
+        "onStateChange": {}
+      }
+    ],
+    "inputParameters": [
+      "fromStartedMinsFromNow",
+      "toStartedMinsFromNow",
+      "workflows",
+      "statuses",
+      "freeText",
+      "correlationIds",
+      "opsGenieAlias",
+      "opsGenieEntity",
+      "opsGeniePriority",
+      "opsGenieResponders",
+      "opsGenieVisibleTo",
+      "opsGenieActions",
+      "opsGenieTags",
+      "opsGenieDetails",
+      "opsGenieEntity"
+    ],
+    "outputParameters": {},
+    "failureWorkflow": "",
+    "schemaVersion": 2,
+    "restartable": true,
+    "workflowStatusListenerEnabled": false,
+    "ownerEmail": "devrel@orkes.io",
+    "timeoutPolicy": "ALERT_ONLY",
+    "timeoutSeconds": 0,
+    "variables": {},
+    "inputTemplate": {},
+    "onStateChange": {}
+  }
