@@ -18,7 +18,7 @@
               "name": "http_task_1",
               "taskReferenceName": "http_task_ref_1",
               "inputParameters": {
-                "uri": "https://hooks.slack.com/services/XXXXX",
+                "uri": "https://hooks.slack.com/services/XXXXXXXX",
                 "method": "POST",
                 "connectionTimeOut": 3000,
                 "readTimeOut": "3000",
